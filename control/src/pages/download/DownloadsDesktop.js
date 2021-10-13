@@ -1,190 +1,160 @@
-import React, { useEffect, useState } from 'react'
-import Footer from '../../components/Footer'
-import styles from './styles/download.module.css'
-import Header from '../../components/Header'
-import arrowDown from './assets/DP-arrow_down.svg'
-import Ellipse159 from './assets/Ellipse159.svg'
-import screenshot from './assets/screenshot.svg'
-import halfCircle from './assets/half-circle.svg'
-import Rect2 from './assets/DP-Rect-2.svg'
-import Rect1 from './assets/DP-Rec-1.svg'
-import homeAndroid from './assets/Home-Android.svg'
-import dm from './assets/DM.svg'
-import fetchInstall from './utils/index'
-
-// const Apk = '../../apk/appRelease.apk'
-// import Apk from '../../apk/appRelease.apk'
+import React, { useState } from "react"
+import Footer from "../../components/Footer"
+import styles from "./styles/download.module.css"
+import Header from "../../components/Header"
+import laptop from "./assets/laptop.svg"
+import device from "./assets/device.svg"
+import icon from "./assets/icon.svg"
+import apple from "./assets/apple.svg"
+import apple1 from "./assets/Apple1.svg"
+import microsoft from "./assets/icons8-microsoft.svg"
+import googleplay from "./assets/googlePlay.svg"
+import android from "./assets/android.svg"
+import infolaptop from "./assets/infolaptop.svg"
+import windows from "./assets/windows.svg"
+import { isMacOs } from "react-device-detect"
 
 const DownloadsDesktop = () => {
-  const [exe, setexe] = useState({ link: '', name: '' })
-  // const [msi, setmsi] = useState({ link: '', name: '' })
-  // const [dmg, setdmg] = useState({ link: '', name: '' })
-
-  useEffect(() => {
-    fetchInstall('exe').then(res => {
-      setexe(res)
+  const [exe, setexe] = useState({ link: "", name: "" })
+  React.useEffect(() => {
+    if (isMacOs) return setexe({ name: "DOWNLOAD FOR MAC" })
+    return setexe({
+      name: "DOWNLOAD FOR WINDOWS",
+      link: "https://drive.google.com/file/d/1bqotCEGC99fs8Ip3jF-5z2KUQqgeB111/view?usp=sharing"
     })
-    // fetchInstall('msi').then(res => {setmsi(res)})
-    // fetchInstall('dmg').then(res => {setdmg(res)})
   }, [])
-
   return (
     <>
       <Header />
-      <section className={`row mx-0`}>
-        <div
-          className={`${styles.container} col container p-lg-5 p-md-5 m-lg-5 m-md-4`}
-        >
-          <div>
-            <h1 className={styles.h1}>
-              Download the Zuri Chat <br /> for Windows
-            </h1>
-            <p className={styles.p}>
-              With the Zuri Chat app, you will always be in touch with your
-              team.
-            </p>
-            <a href={exe.link} download={exe.name} className={styles.button1}>
-              DOWNLOAD (64-BIT)
-            </a>
-          </div>
-          <p className={`${styles.plink} mt-lg-4 d-inline`}>Looking for Mac?</p>
-          <a href="#download-mac">
-            <img className={`d-inline mx-1`} src={arrowDown} alt="arrow-down" />
-          </a>
-        </div>
-        <div className={`${styles.divcol} col-8`}>
-          <div className={styles.images}>
-            <img className={styles.circle} src={Ellipse159} alt="circle"></img>
-            <img
-              className={`${styles.screenshot}`}
-              src={screenshot}
-              alt="app screenshot"
-            ></img>
-            <img
-              className={styles.circle2}
-              src={halfCircle}
-              alt="circle2"
-            ></img>
-          </div>
-        </div>
-      </section>
+      <section className={`${styles.hero} `}>
+        <div className={`${styles.heroText} `}>
+          <p className={`${styles.heroheading}`}>
+            Experience the Zuri Chat’s desktop and mobile apps
+          </p>
+          <p className={`${styles.p} mb-4`}>
+            Connecting with your team has never been easier with Zuri Chat.
+          </p>
 
-      <a id="download-mac">
-        <section className={`row mx-0`}>
-          <div
-            className={`${styles.container} col container p-lg-5 p-md-5 m-md-4 m-lg-5`}
-          >
-            <div>
-              <h1 className={`${styles.h1}`}>
-                Download the Zuri Chat <br /> for MacOS
-              </h1>
-              <p className={styles.p}>
-                With the Zuri Chat app, you will always be in touch with your
-                team.
-              </p>
-              <a href={exe.link} download={exe.name} className={styles.button1}>
-                DOWNLOAD
-              </a>
-            </div>
-            <p className={`${styles.plink} mt-lg-4 d-inline`}>
-              Looking for Mobile?
-            </p>
-            <a href="#download-mobile">
-              <img
-                className={`d-inline mx-lg-1`}
-                src={arrowDown}
-                alt="arrow-down"
-              />
-            </a>
-          </div>
-          <div className={`${styles.divcol} col-8`}>
-            <div className={styles.images}>
-              <img
-                className={styles.circle1}
-                src={Ellipse159}
-                alt="circle"
-              ></img>
+          <div className={styles.heroImages}>
+            <div className={styles.alignCenter}>
               <img
                 className={`${styles.screenshot}`}
-                src={screenshot}
+                src={device}
                 alt="app screenshot"
-              ></img>
-              <img className={styles.half} src={halfCircle} alt="circle2"></img>
-            </div>
-          </div>
-        </section>
-      </a>
-      <a id="download-mobile">
-        <section className={`row mx-0`}>
-          <div className={` col container p-lg-5 p-md-5 m-md-4 m-lg-5`}>
-            <div>
-              <h1 className={styles.h1}>
-                Dive into a new realm of productivity
-              </h1>
-              <p className={styles.p}>
-                Innovate in your workspace with the Zurichat apps on
-                <a
-                  className={`${styles.versionlink} px-lg-1 fw-bold`}
-                  href={exe.link}
-                  download={exe.name}
-                >
-                  Android
+              />
+              <div>
+                <h2>Zuri for Desktop</h2>
+                <a href="/download-app" className={styles.downloadButton}>
+                  <img className={`px-1`} src={apple1} alt="download icon" />
+                  <span> Download on Mac App Store</span>
                 </a>
-                and
                 <a
-                  className={`${styles.versionlink} px-lg-1 fw-bold`}
-                  href={exe.link}
-                  download={exe.name}
+                  href={`https://drive.google.com/file/d/1bqotCEGC99fs8Ip3jF-5z2KUQqgeB111/view?usp=sharing`}
+                  className={styles.downloadButton}
                 >
-                  IOS
+                  <img className={`px-1`} src={microsoft} alt="download icon" />
+                  <span>Get it from Microsoft</span>
                 </a>
-              </p>
+              </div>
+            </div>
+
+            <div className={styles.alignCenter}>
+              <div className={styles.mobileImage}>
+                <img
+                  src={infolaptop}
+                  className={`${styles.screenshot}`}
+                  alt=""
+                />
+              </div>
+              <div>
+                <h2>Zuri for Mobile</h2>
+                <a href="/download-app" className={styles.downloadButton}>
+                  <img className={`px-1`} src={apple1} alt="download icon" />
+                  <span>Download on App Store</span>
+                </a>
+
+                <a
+                  href="https://drive.google.com/file/d/1dbQS1rQOVUI87AzdeljF6LM5iRNnaMzZ/view"
+                  download={exe.name}
+                  className={styles.downloadButton}
+                >
+                  <img
+                    className={`px-1`}
+                    src={googleplay}
+                    alt="download icon"
+                  />
+                  <span>GET IT ON Google Play</span>
+                </a>
+              </div>
             </div>
           </div>
-          <div className={`col-8 px-0`}>
-            <div className={styles.images}>
-              <img className={styles.rec} src={Rect2} alt="vector"></img>
-              <img
-                className={`${styles.android}`}
-                src={homeAndroid}
-                alt="mobile screenshot"
-              ></img>
-              <img className={styles.dm} src={dm} alt="DM"></img>
-            </div>
-          </div>
-        </section>
-      </a>
-      <section className={`${styles.foot} mt-lg-5`}>
-        <div>
-          <img
-            className={`${styles.rec1} mt-lg-5`}
-            src={Rect1}
-            alt="vector"
-          ></img>
+
+          <div>{/*  */}</div>
+
+          {/* <a href={exe.link} download={exe.name} className={styles.button1}>
+            <img className={`px-2`} src={icon} alt="download icon"></img>
+            {exe.name}
+          </a> */}
         </div>
-        <div className={`${styles.button}`}>
-          <h1 className={`${styles.work}`}>
-            Looking for a better work environment?
-          </h1>
-          <div className={`mt-lg-5`}>
-            <a
-              href={exe.link}
-              download={exe.name}
-              className={`${styles.button2} d-inline`}
-            >
-              DOWNLOAD FOR WINDOWS
-            </a>
-            <a
-              href={exe.link}
-              download={exe.name}
-              className={`${styles.button3} d-inline`}
-            >
-              DOWNLOAD FOR MOBILE
-            </a>
-          </div>
+        {/*  */}
+      </section>
+
+      <section className={`${styles.info}`}>
+        <p className="h2 text-center font-weight-normal text-white w-50 mb-4">
+          Download and enjoy the Zuri Chat experience on any these devices
+        </p>
+        <div className={`${styles.downloadButtonContainer}`}>
+          <a
+            href={`https://drive.google.com/file/d/1bqotCEGC99fs8Ip3jF-5z2KUQqgeB111/view?usp=sharing`}
+            className={styles.downloadButton1}
+          >
+            Windows
+            <img className={`px-2`} src={windows} alt="download icon" />
+          </a>
+          <a href="/download-app" className={styles.downloadButton1}>
+            macOS
+            <img className={`px-2`} src={apple} alt="download icon" />
+          </a>
+          <a href="/download-app" className={styles.downloadButton1}>
+            iOS
+            <img className={`px-2`} src={apple} alt="download icon" />
+          </a>
+          <a
+            href="https://drive.google.com/file/d/1dbQS1rQOVUI87AzdeljF6LM5iRNnaMzZ/view"
+            download={exe.name}
+            className={styles.downloadButton1}
+          >
+            Android
+            <img className={`px-2`} src={android} alt="download icon" />
+          </a>
+        </div>
+        <div
+          className={`d-flex justify-content-center ${styles.infoImageContainer}`}
+        >
+          <img
+            className={`${styles.screen}`}
+            src={device}
+            alt="app screenshot"
+          ></img>
         </div>
       </section>
 
+      <section className={` ${styles.ctaContainer}`}>
+        <div>
+          <h1 className={`${styles.heroheading} py-3 mb-4`}>
+            Same feel, same team on Zuri App!
+          </h1>
+          <a href={exe.link} download={exe.name} className={styles.button1}>
+            <img className={`px-2`} src={icon} alt="download icon"></img>
+            {exe.name}
+          </a>
+        </div>
+        <img
+          className={`${styles.laptop}`}
+          src={laptop}
+          alt="app screenshot"
+        ></img>
+      </section>
       <Footer />
     </>
   )

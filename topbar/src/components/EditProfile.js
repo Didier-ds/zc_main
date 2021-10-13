@@ -1,43 +1,47 @@
-import { useRef, useState, useEffect, useContext } from 'react'
-import ProfileModal from './ProfileModal'
+import { useRef, useState, useEffect, useContext } from "react"
+import ProfileModal from "./ProfileModal"
+import { authAxios } from "../utils/Api"
 
-import { AiFillCamera } from 'react-icons/ai'
-import avatar from '../assets/images/user.svg'
-import { ProfileContext } from '../context/ProfileModal'
-import { authAxios } from '../utils/Api'
-import Loader from 'react-loader-spinner'
-import toast, { Toaster } from 'react-hot-toast'
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
-import TimezoneSelect from 'react-timezone-select'
-import { StyledProfileWrapper } from '../styles/StyledEditProfile'
+import { AiFillCamera } from "react-icons/ai"
+import defaultAvatar from "../assets/images/avatar_vct.svg"
+import { ProfileContext } from "../context/ProfileModal"
+import Loader from "react-loader-spinner"
+import toast, { Toaster } from "react-hot-toast"
+import { data } from "../utils/Countrycode"
+import TimezoneSelect from "react-timezone-select"
+import { StyledProfileWrapper } from "../styles/StyledEditProfile"
 
 const EditProfile = () => {
   const imageRef = useRef(null)
   const avatarRef = useRef(null)
-  const { user, orgId, userProfileImage, setUserProfileImage } =
-    useContext(ProfileContext)
+  const {
+    user,
+    orgId,
+    userProfileImage,
+    setUserProfileImage,
+    toggleModalState
+  } = useContext(ProfileContext)
   const [selectedTimezone, setSelectedTimezone] = useState({})
-  const [links, setLinks] = useState([''])
-  const [phone, setPhone] = useState('')
+  const [links, setLinks] = useState([""])
   const [state, setState] = useState({
-    name: user.first_name,
+    name: user.name,
     display_name: user.display_name,
-    pronouns: user.pronouns,
     role: user.role,
     image_url: user.image_url,
-    bio: '',
-    prefix: '',
-    timezone: '',
-    twitter: '',
-    facebook: '',
-    loading: false
+    bio: "",
+    phone: user.phone,
+    prefix: "",
+    timezone: "",
+    twitter: "",
+    facebook: "",
+    loading: false,
+    imageLoading: false
   })
 
-  console.log('users', user)
-
   const addList = () => {
-    setLinks([...links, ''])
+    if (links.length < 5) {
+      setLinks([...links, ""])
+    }
   }
 
   const handleLinks = (e, index) => {
@@ -46,15 +50,15 @@ const EditProfile = () => {
     setLinks(links[index])
   }
 
+  //Function handling Image Upload
+
   const handleImageChange = event => {
-    setState({ loading: true })
+    setState({ ...state, imageLoading: true })
     if (imageRef.current.files[0]) {
       let fileReader = new FileReader()
 
       fileReader.onload = function (event) {
         avatarRef.current.src = event.target.result
-        setUserProfileImage(event.target.result)
-        console.log(event.target.result)
       }
 
       fileReader.readAsDataURL(imageRef.current.files[0])
@@ -62,76 +66,66 @@ const EditProfile = () => {
       const imageReader = event.target.files[0]
 
       const formData = new FormData()
-      formData.append('image', imageReader)
+      formData.append("image", imageReader)
 
       authAxios
-        .patch(`/organizations/${orgId}/members/${user._id}/photo`, formData)
+        .patch(
+          `/organizations/${orgId}/members/${user._id}/photo/upload`,
+          formData
+        )
         .then(res => {
-          console.log(res)
-          setState({ loading: false })
-          setUserProfileImage(res.data.data.image_url)
-          toast.success('User Image Updated Successfully', {
-            position: 'bottom-center'
+          const newUploadedImage = res.data.data
+          setUserProfileImage(newUploadedImage)
+          setState({ ...state, imageLoading: false })
+          toast.success("User Image Updated Successfully", {
+            position: "top-center"
           })
         })
-        .then(res => {
-          return authAxios.get(`/organizations/${orgId}/members/${user._id}/`)
-        })
         .catch(err => {
-          console.log(err)
-          setState({ loading: false })
+          console.error(err)
+          setState({ ...state, imageLoading: false })
           toast.error(err?.message, {
-            position: 'bottom-center'
+            position: "top-center"
           })
         })
     }
   }
 
-  useEffect(() => {
-    // handleImageChange()
-  }, [userProfileImage])
+  const handleImageDelete = () => {
+    setState({ ...state, imageLoading: true })
 
-  // const handleImageChange = event => {
-  //   setState({ loading: true })
-
-  //   const file = event.target.files[0]
-
-  //   // encode the file using the FileReader API
-  //   const reader = new FileReader()
-  //   reader.onloadend = () => {
-  //     // log to console
-  //     // logs data:<type>;base64,wL2dvYWwgbW9yZ...
-  //     avatarRef.current.src = reader.result
-  //     setUserProfileImage(reader.result)
-  //     console.log(reader.result)
-  //   }
-  //   reader.readAsDataURL(file)
-
-  // let fileReader = new FileReader();
-
-  // fileReader.onload = function (event) {
-  //   avatarRef.current.src = event.target.result;
-  //   console.log(event.target.result);
-  // };
-
-  // let reader = fileReader.readAsDataURL(event.target.files[0]);
-  // console.log(reader)
+    authAxios
+      .patch(`/organizations/${orgId}/members/${user._id}/photo/delete`)
+      .then(res => {
+        setUserProfileImage(defaultAvatar)
+        setState({ ...state, imageLoading: false })
+        toast.success("User Image Removed Successfully", {
+          position: "top-center"
+        })
+      })
+      .catch(err => {
+        console.error(err)
+        setState({ ...state, imageLoading: false })
+        toast.error(err?.message, {
+          position: "top-center"
+        })
+      })
+  }
 
   useEffect(() => {
     setUserProfileImage(user.image_url)
-  })
+  }, [user])
 
   // This will handle the profile form submission
 
   const handleFormSubmit = e => {
     e.preventDefault()
-    setState({ loading: true })
+    setState({ ...state, loading: true })
 
     const data = {
-      first_name: state.name,
+      name: state.name,
       display_name: state.display_name,
-      pronouns: state.pronouns,
-      phone: phone,
+      phone: state.phone,
       bio: state.bio,
       timeZone: state.timezone
       // socials: [
@@ -149,17 +143,17 @@ const EditProfile = () => {
     authAxios
       .patch(`/organizations/${orgId}/members/${user._id}/profile`, data)
       .then(res => {
-        console.log(res)
+        // console.log(res)
         setState({ loading: false })
-        toast.success('User Profile Updated Successfully', {
-          position: 'bottom-center'
+        toast.success("User Profile Updated Successfully", {
+          position: "top-center"
         })
       })
       .catch(err => {
-        console.log(err)
+        console.error(err)
         setState({ loading: false })
         toast.error(err?.message, {
-          position: 'bottom-center'
+          position: "top-center"
         })
       })
   }
@@ -174,7 +168,7 @@ const EditProfile = () => {
                 <div className="mobileAvataeCon">
                   <img
                     ref={avatarRef}
-                    src={user.image_url ? user.image_url : avatar}
+                    src={user.image_url !== "" ? user.image_url : defaultAvatar}
                     alt="profile-pic"
                     className="avatar"
                   />
@@ -183,9 +177,9 @@ const EditProfile = () => {
                     <AiFillCamera className="icon" />
                   </label>
                 </div>
-                <div className="input-group ml-4 md:ml-0">
+                <div className="input-group mal-4">
                   <label htmlFor="name" className="inputLabel">
-                    First Name
+                    Full Name
                   </label>
                   <input
                     type="text"
@@ -197,9 +191,8 @@ const EditProfile = () => {
                   />
                 </div>
               </div>
-
               <div className="double-input">
-                <div className="input-group">
+                <div className="input-group mb-0">
                   <label htmlFor="dname" className="inputLabel">
                     Choose a Display Name
                   </label>
@@ -216,24 +209,9 @@ const EditProfile = () => {
                     uses your exact name, you should change it!
                   </p>
                 </div>
-                <div className="input-group">
-                  <label htmlFor="pronouns" className="inputLabel">
-                    Pronouns
-                  </label>
-                  <select
-                    name="pronouns"
-                    defaultValue={state.pronouns}
-                    onClick={e => setState({ pronouns: e.target.value })}
-                    className="select"
-                    id="pronouns"
-                  >
-                    <option value="He/him">He/him</option>
-                    <option value="She/her">She/her</option>
-                  </select>
-                </div>
               </div>
 
-              <div className="input-group">
+              <div className="input-group mb-0">
                 <label htmlFor="what" className="inputLabel">
                   What you do
                 </label>
@@ -249,8 +227,7 @@ const EditProfile = () => {
                   Let people know what you do at <b>ZURI</b>
                 </p>
               </div>
-
-              <div className="input-group">
+              {/* <div className="input-group">
                 <label htmlFor="bio" className="inputLabel">
                   Bio
                 </label>
@@ -261,24 +238,43 @@ const EditProfile = () => {
                   name="bio"
                   id="bio"
                 ></textarea>
-              </div>
-              <div className="input-group">
+              </div> */}
+              <div className="input-group phone">
                 <label className="inputLabel">Phone Number</label>
-                <PhoneInput
-                  placeholder="Enter phone number"
-                  value={phone}
-                  onChange={setPhone}
-                />
+                <div className="phone-container">
+                  <select
+                    onChange={e =>
+                      setState({ ...state, prefix: e.target.value })
+                    }
+                    className="pref"
+                  >
+                    {
+                      // country code
+                      data.map((item, index) => (
+                        <option key={index} value={item.dial_code}>
+                          {item.dial_code}
+                        </option>
+                      ))
+                    }
+                  </select>
+                  <input
+                    onChange={e =>
+                      setState({ ...state, phone: e.target.value })
+                    }
+                    className="phoneInput"
+                    type="number"
+                  />
+                </div>
               </div>
               <div className="input-group">
-                <label className="inputLabel">Time Zone</label>
+                <label className="inputLabel col-12">Time Zone</label>
                 <TimezoneSelect
                   value={selectedTimezone}
                   onChange={setSelectedTimezone}
+                  className="col-12"
                 />
               </div>
-
-              <div className="input-group">
+              {/* <div className="input-group">
                 <label htmlFor="twitter" className="inputLabel">
                   Twitter
                 </label>
@@ -290,8 +286,8 @@ const EditProfile = () => {
                   id="twitter"
                   name="twitter"
                 />
-              </div>
-              <div className="input-group">
+              </div> */}
+              {/* <div className="input-group">
                 <label htmlFor="facebook" className="inputLabel">
                   Facebook
                 </label>
@@ -303,29 +299,54 @@ const EditProfile = () => {
                   id="facebook"
                   name="facebook"
                 />
-              </div>
-
+              </div> */}
               <div className="input-group">
-                <label className="inputLabel">
+                {/* <label className="inputLabel">
                   Additional Links <span>(5 max)</span>
                 </label>
                 {links?.map((list, index) => (
                   <input type="text" className="input mb-3" key={index} />
                 ))}
 
-                <p className="warning" onClick={addList}>
-                  Add new link
-                </p>
+                {links.length !== 5 && (
+                  <p className="warning" onClick={addList}>
+                    Add new link
+                  </p>
+                )} */}
               </div>
+              {/* <button onClick={handleFormSubmit} className="btns saveBtn">
+                {state.loading ? (
+                  <Loader
+                    type="ThreeDots"
+                    color="#fff"
+                    height={40}
+                    width={40}
+                  />
+                ) : (
+                  "Save Changes"
+                )}
+              </button> */}
             </div>
+
             <div className="img-container">
               <div className="avatar">
-                <img
-                  ref={avatarRef}
-                  className="img"
-                  src={userProfileImage ? userProfileImage : avatar}
-                  alt="profile-pic"
-                />
+                <div className="avatar-container">
+                  {state.imageLoading ? (
+                    <Loader
+                      type="Oval"
+                      color="#00B87C"
+                      height={24}
+                      width={24}
+                    />
+                  ) : (
+                    <img
+                      ref={avatarRef}
+                      className="img"
+                      src={userProfileImage ? userProfileImage : defaultAvatar}
+                      alt="profile-pic"
+                    />
+                  )}
+                </div>
 
                 <input
                   ref={imageRef}
@@ -335,18 +356,24 @@ const EditProfile = () => {
                   id="img"
                 />
                 <label htmlFor="img" className="btns chgBtn">
-                  {state.loading ? (
+                  {/* {state.loading ? (
                     <Loader
                       type="ThreeDots"
-                      color="#00B87C"
+                      color="#fff"
                       height={40}
                       width={40}
                     />
-                  ) : (
-                    'Upload Image'
-                  )}
+                  ) : ( */}
+                  Upload Image
+                  {/* ) */}
                 </label>
-                <button className="btns rmvBtn">Delete image</button>
+                <div
+                  role="button"
+                  className="rmvBtn"
+                  onClick={handleImageDelete}
+                >
+                  Remove Image
+                </div>
               </div>
             </div>
           </div>
@@ -355,21 +382,18 @@ const EditProfile = () => {
             {state.loading ? (
               <Loader type="ThreeDots" color="#00B87C" height={24} width={24} />
             ) : (
-              'Save'
+              "Save"
             )}
           </div>
           <div className="button-wrapper">
-            <button className="btns rmvBtn">Cancel</button>
-            <button onClick={handleFormSubmit} className="btns chgBtn">
+            <button className="btns cncBtn" onClick={toggleModalState}>
+              Cancel
+            </button>
+            <button onClick={handleFormSubmit} className="btns saveBtn">
               {state.loading ? (
-                <Loader
-                  type="ThreeDots"
-                  color="#00B87C"
-                  height={40}
-                  width={40}
-                />
+                <Loader type="ThreeDots" color="#fff" height={40} width={40} />
               ) : (
-                'Save Changes'
+                "Save Changes"
               )}
             </button>
           </div>

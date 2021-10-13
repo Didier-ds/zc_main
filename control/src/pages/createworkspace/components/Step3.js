@@ -6,6 +6,7 @@ import Oval from '../assets/Oval.svg'
 import { Link, useRouteMatch } from 'react-router-dom'
 import Header from '../../../components/Header'
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 
 const Step3 = () => {
   let match = useRouteMatch()
@@ -30,6 +31,9 @@ const Step3 = () => {
     <>
       <Header />
       <Wrapper>
+        <Helmet>
+          <title>Teammates - Zuri Chat</title>
+        </Helmet>
         <TopSpanWrapper>
           <TopSpans>
             {user ? <SignedInAs>Signed in as {user.email}</SignedInAs> : null}
@@ -40,7 +44,7 @@ const Step3 = () => {
           <Step>Step 3 of 3</Step>
           <Heading>
             Who do you email most about <br />
-            <span> project-{`${projectname}`}</span>?
+            <span>{`${projectname}`}</span>?
           </Heading>
           <Marketing>
             Give Zuri Chat a spin and add a few coworkers you talk with
@@ -59,9 +63,18 @@ const Step3 = () => {
 
               <SharableLink>
                 <img src={LinkIcon} alt="" />
-                <a style={{ color: '#00B87C', cursor: 'pointer' }}>
-                  Get a sharable link <span> instead</span>
+                <a
+                  style={{ color: '#00B87C', cursor: 'pointer' }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `https://zuri.chat/invite?organization=${projectname}`
+                    )
+                    alert(`link has been copied`)
+                  }}
+                >
+                  Get a sharable link
                 </a>
+                <span> instead</span>
               </SharableLink>
             </InputLinkSection>
           </InputSection>
@@ -158,6 +171,9 @@ const Skip = styled(Link)`
   font-family: var(--font-family);
   color: #808080;
   cursor: pointer;
+  &:hover{
+    color: #B0B0B0;
+  }
 
   @media (max-width: 35rem) {
     font-size: 1rem;
@@ -249,6 +265,7 @@ const Another = styled.a`
   cursor: pointer;
   &:hover {
     text-decoration: underline;
+    color: #909090;
   }
   @media (max-width: 35rem) {
     font-size: ${14 / 16}rem;
@@ -266,7 +283,7 @@ const SharableLink = styled.div`
     font-weight: 600;
     font-size: ${18 / 16}rem;
   }
-  & > a > span {
+  & > span {
     color: var(--color);
   }
   @media (max-width: 35rem) {

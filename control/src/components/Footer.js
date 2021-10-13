@@ -1,13 +1,15 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from 'react'
-import styles from '../component-styles/FooterStyle.module.css'
-import logo from '../component-assets/zurichatlogo.svg'
-import facebook from '../component-assets/facebook.svg'
-import twitter from '../component-assets/twitter.svg'
-import linkedin from '../component-assets/linkedin.svg'
-import instagram from '../component-assets/instagram.svg'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons'
+import React, { useState } from "react"
+
+import styles from "../component-styles/FooterStyle.module.css"
+import logo from "../component-assets/zurichatlogo.svg"
+import facebook from "../component-assets/facebook.svg"
+import twitter from "../component-assets/twitter.svg"
+import linkedin from "../component-assets/linkedin.svg"
+import instagram from "../component-assets/instagram.svg"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons"
+import { Link } from 'react-router-dom'
+
 
 const Footer = () => {
   const getYear = () => {
@@ -32,78 +34,87 @@ const Footer = () => {
   }
 
   return (
-    <div className={styles.m_footer}>
-      {/* mobile view*/}
-      <div className={styles.mobile}>
+    /* laptop view*/
+    <div className={styles.footer}>
+      <div className={styles.top_footer}>
         <div className={styles.logo}>
-          <a href="/landing">
-            <img className={styles.logo_img} src={logo} alt="Logo" />
-            <p className={styles.logo_name}>Zuri Chat</p>
-          </a>
+          <Link to="/">
+            <img
+              className={styles.logo_img}
+              src={logo}
+              alt="Logo"
+              width="30px"
+              height="30px"
+            />
+            <span className={styles.logo_name}>Zuri Chat</span>
+          </Link>
         </div>
 
-        <div className={styles.footer_menu}>
-          <ul>
-            <a onClick={Show}>
-              <li className={styles.dropdown_list}>
-                COMPANY
-                <FontAwesomeIcon
-                  className={styles.fa}
-                  icon={show ? faAngleUp : faAngleDown}
-                />
+        <div className={styles.menu}>
+          <div>
+            <h5>Company</h5>
+            <ul>
+              <li>
+                <Link to="/careers">Careers</Link>{" "}
               </li>
-            </a>
-            <a onClick={Show2}>
-              <li className={styles.dropdown_list}>
-                EXPLORE
-                <FontAwesomeIcon
-                  className={styles.fa}
-                  icon={show2 ? faAngleUp : faAngleDown}
-                />
+              <li>
+                <Link to="/about">About Zurichat</Link>{" "}
               </li>
-            </a>
-            <a onClick={Show3}>
-              <li className={styles.dropdown_list}>
-                RESOURCES
-                <FontAwesomeIcon
-                  className={styles.fa}
-                  icon={show3 ? faAngleUp : faAngleDown}
-                />
+              <li>
+                <Link to="/ZurichatBlog">Blog</Link>{" "}
               </li>
-            </a>
-            <a onClick={Show4}>
-              <li className={styles.dropdown_list}>
-                COMPARE
-                <FontAwesomeIcon
-                  className={styles.fa}
-                  icon={show4 ? faAngleUp : faAngleDown}
-                />
+            </ul>
+          </div>
+
+          <div>
+            <h5>Info</h5>
+            <ul>
+              <li>
+                <Link to="/privacy">
+                  <span>Privacy & Terms</span>{" "}
+                </Link>
               </li>
-            </a>
-          </ul>
+              <li>
+                <Link to="/marketplace">Market Place</Link>{" "}
+              </li>
+              <li>
+                <Link to="/security">Security</Link>{" "}
+              </li>
+              <li>
+                <a href="https://zuri.chat/dao-featues">Web3/DAO</a>{" "}
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5>Know us</h5>
+            <ul>
+              <li>
+                <Link to="/download-app">Downloads</Link>{" "}
+              </li>
+              <li>
+                <Link to="/contact-us">Contact Us</Link>{" "}
+              </li>
+             
+              <li>
+                <a href="https://docs.zuri.chat/">Documentation</a>{" "}
+              </li>
+              <li>
+                <Link to="/ebooks">Ebooks</Link>{" "}
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <div className={styles.footer_menu}>
-          <ul>
-            <li className={styles.list}>
-              <a href="/privacy">Privacy</a>{' '}
-            </li>
-            <li className={styles.list}>
-              <a href="/terms">Terms</a>{' '}
-            </li>
-            <li className={styles.list}>
-              <a href="/help">Help Center</a>{' '}
-            </li>
-            <li className={styles.list}>
-              <a href="/contact-us">Contact Us</a>{' '}
-            </li>
-          </ul>
-        </div>
-
-        <div className={styles.mobile_social}>
+        <div className={styles.social}>
+          <h5>Social Media</h5>
           <ul>
             <li>
-              <a href="/facebook">
+              <a
+                href="https://www.facebook.com/Zuri-Chat-101278805666628"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img
                   src={facebook}
                   alt="Facebook"
@@ -112,7 +123,11 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/instagram">
+              <a
+                href="https://instagram.com/zurichathq"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img
                   src={instagram}
                   alt="Instagram"
@@ -121,7 +136,11 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/twitter">
+              <a
+                href="https://twitter.com/zurichat"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img
                   src={twitter}
                   alt="Twitter"
@@ -130,7 +149,7 @@ const Footer = () => {
               </a>
             </li>
             <li>
-              <a href="/linkedin">
+              <a href="https://www.linkedin.com/company/zuri-chat/">
                 <img
                   src={linkedin}
                   alt="Linkedin"
@@ -140,157 +159,10 @@ const Footer = () => {
             </li>
           </ul>
         </div>
-        <div className={styles.footer_menu}>
-          <p>
-            {' '}
-            &copy; {getYear()} Zuri Chat, Homepage Workflow. All Rights Reserved
-          </p>
-        </div>
       </div>
 
-      {/* laptop view*/}
-      <div className={styles.footer}>
-        <div className={styles.top_footer}>
-          <div className={styles.logo}>
-            <a href="/">
-              <img
-                className={styles.logo_img}
-                src={logo}
-                alt="Logo"
-                width="30px"
-                height="30px"
-              />
-              <p className={styles.logo_name}>Zuri Chat</p>
-            </a>
-          </div>
-
-          <div className={styles.menu}>
-            <div className={styles.menu_list}>
-              <h5>Company</h5>
-              <ul>
-                <li>
-                  <a href="/finalist">Finalist</a>{' '}
-                </li>
-                <li>
-                  <a href="/events">Events</a>{' '}
-                </li>
-                <li>
-                  <a href="/blog">Blog posts</a>{' '}
-                </li>
-                <li>
-                  <a href="/news">News</a>{' '}
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.menu_list}>
-              <h5>Explore</h5>
-              <ul>
-                <li>
-                  <a href="/features">Features</a>{' '}
-                </li>
-                <li>
-                  <a href="/plugins">Plugins</a>{' '}
-                </li>
-                <li>
-                  <a href="/pricing">Pricing</a>{' '}
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.menu_list}>
-              <h5>Resources</h5>
-              <ul>
-                <li>
-                  <a href="/designers">Designers</a>{' '}
-                </li>
-                <li>
-                  <a href="/developer">Developers</a>{' '}
-                </li>
-                <li>
-                  <a href="/mentors">Mentors</a>{' '}
-                </li>
-              </ul>
-            </div>
-
-            <div className={styles.menu_list}>
-              <h5>Compare</h5>
-              <ul>
-                <li>
-                  <a href="https://slack.com">Slack</a>{' '}
-                </li>
-                <li>
-                  <a href="https://discord.com">Discord</a>{' '}
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className={styles.social}>
-            <h5>Social Media</h5>
-            <ul>
-              <li>
-                <a href="/facebook">
-                  <img
-                    src={facebook}
-                    alt="Facebook"
-                    title="Connect with us on Facebook"
-                  />
-                </a>
-              </li>
-              <li>
-                <a href="/instagram">
-                  <img
-                    src={instagram}
-                    alt="Instagram"
-                    title="Connect with us on Instagram"
-                  />
-                </a>
-              </li>
-              <li>
-                <a href="/twitter">
-                  <img
-                    src={twitter}
-                    alt="Twitter"
-                    title="Connect with us on Twitter"
-                  />
-                </a>
-              </li>
-              <li>
-                <a href="/linkedin">
-                  <img
-                    src={linkedin}
-                    alt="Linkedin"
-                    title="Connect with us on Linkedin"
-                  />
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className={styles.bottom_footer}>
-          <p>
-            {' '}
-            &copy; {getYear()} Zuri Chat, Homepage Workflow. All Rights Reserved
-          </p>
-          <div>
-            <ul>
-              <li>
-                <a href="/privacy">Privacy</a>{' '}
-              </li>
-              <li>
-                <a href="/terms">Terms</a>{' '}
-              </li>
-              <li>
-                <a href="/help">Help Center</a>{' '}
-              </li>
-              <li>
-                <a href="/contact-us">Contact Us</a>{' '}
-              </li>
-            </ul>
-          </div>
-        </div>
+      <div className={styles.bottom_footer}>
+        <p> &copy; {getYear()} Zuri Chat. All Rights Reserved</p>
       </div>
     </div>
   )

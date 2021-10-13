@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react'
-
-import styles from '../styles/Tab.module.css'
-import SettingsTab from './SettingsTab'
-import ProfileTab from './ProfileTab'
-import NotificationTab from './NotificationTab'
-import { FaBars } from 'react-icons/fa'
+import React, { useState, useEffect } from "react"
+import { useHistory } from "react-router-dom"
+import styles from "../styles/Tab.module.css"
+import SettingsTab from "./SettingsTab"
+import ProfileTab from "./ProfileTab"
+import NotificationTab from "./NotificationTab"
+import { FaBars } from "react-icons/fa"
 
 const Tab = () => {
   const [toggleState, setToggleState] = useState(1)
   const [menu, setMenu] = useState(true)
-
+  const history = useHistory()
   useEffect(() => {
     setMenu(!menu)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toggleTab = index => {
@@ -49,7 +48,7 @@ const Tab = () => {
                 ? `${styles.tabs} ${styles.activetabs}`
                 : styles.tabs
             }
-            onClick={() => toggleTab(2)}
+            // onClick={() => toggleTab(2)}
           >
             Notification
           </button>
@@ -60,7 +59,10 @@ const Tab = () => {
                 ? `${styles.tabs} ${styles.activetabs}`
                 : styles.tabs
             }
-            onClick={() => toggleTab(3)}
+            // onClick={() => toggleTab(3)}
+            onClick={() => {
+              history.push("/home")
+            }}
           >
             Profile
           </button>

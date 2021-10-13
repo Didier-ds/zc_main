@@ -1,71 +1,57 @@
 import React from 'react'
 import styles from './styles/Cookie.module.css'
-import hamburger from '../../component-assets/hamburger.png'
+import cookie from '../../component-assets/cookie.svg'
 import { Link } from 'react-router-dom'
+
+const cookieStorage = {
+  getItem: key => {
+    const cookies = document.cookie
+      .split(';')
+      .map(cookie => cookie.split('='))
+      .reduce((acc, [key, value]) => ({ ...acc, [key.trim()]: value }), {})
+    return cookies[key]
+  },
+  setItem: (key, value, age) => {
+    document.cookie = `${key}=${value}; max-age=${age}`
+  }
+}
+
+const handleClickAllow = event => {
+  cookieStorage.setItem('Zuri Chat Accept', 'true', '2592000')
+  event.target.parentNode.parentNode.parentNode.parentNode.style.opacity = '0'
+}
+const handleClickDecline = event => {
+  cookieStorage.setItem('Zuri Chat Decline', 'true')
+  event.target.parentNode.parentNode.parentNode.parentNode.style.opacity = '0'
+}
 
 const Cookies = () => {
   return (
     <div className={styles.bannerContainer}>
-      <div className={styles.bannerBox}>
-        <div className={styles.bannerLogo}>
-          <img className={`mx-auto`} src={hamburger} alt="hamburger" />
-          <div className={styles.bannerTitle}>
-            <h1>OUR COOKIE POLICY</h1>
-          </div>
-          <div className={styles.bannerText}>
-            <p>
-              We use cookies to ensure that that we give the best experience on
-              or website. We also use cookies to ensure we show
-              <br /> you advertisiing that si relevant to you{' '}
-              <Link to="/cookies-settings">manage cookie settings</Link> at
-              anytime.
-            </p>
-          </div>
-        </div>
-        <div className={styles.bannerButtons}>
-          <button
-            style={{
-              backgroundColor: '#00b87c',
-              color: 'white',
-              fontWeight: 'bold',
-              padding: '10px 0',
-              borderRadius: '20px',
-              border: 'none'
-            }}
-            className={`${styles.allowButton} ${styles.button}`}
-            onClick={handleClickAllow}
-          >
-            Allow
-          </button>
-          <button
-            style={{
-              backgroundColor: 'white',
-              color: 'black',
-
-              padding: '10px 0 ',
-              fontWeight: 'bold',
-              borderRadius: '20px',
-              border: 'none'
-            }}
-            className={`${styles.declineButton} ${styles.button}`}
-            onClick={handleClickDecline}
-          >
-            Decline
-          </button>
-        </div>
+      <img src={cookie} alt="cookies" title="cookies" />
+      <div className={styles.cookie_body}>
+        <span>
+          We use third-party{' '}
+          <Link to="/cookies-settings" className={styles.cookie}>
+            cookies
+          </Link>{' '}
+          in order to personalize your site experience.
+        </span>
+        <ul className={styles.buttons}>
+          <li>
+            <button onClick={handleClickAllow} className={styles.allow}>
+              Allow
+            </button>
+          </li>
+          <li>
+            <button onClick={handleClickDecline} className={styles.decline}>
+              Decline
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   )
-}
-
-const handleClickAllow = event => {
-  sessionStorage.setItem('cookies-allow', 'true')
-  event.target.parentNode.parentNode.parentNode.style.display = 'none'
-}
-
-const handleClickDecline = event => {
-  sessionStorage.setItem('cookies-decline', 'true')
-  event.target.parentNode.parentNode.parentNode.style.display = 'none'
 }
 
 export default Cookies

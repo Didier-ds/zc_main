@@ -1,9 +1,10 @@
 import React from 'react'
-//import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { RiErrorWarningLine } from 'react-icons/ri'
 import styles from '../component-styles/AuthFormWrapper.module.css'
 import logo from '../component-assets/logo.svg'
 import google from '../component-assets/google.svg'
+import GoogleAuth from './GoogleAuth'
 
 const FormWrapper = ({
   children,
@@ -13,20 +14,20 @@ const FormWrapper = ({
   topLineText,
   submitButtonName,
   error,
-  name,
-  email,
-  password,
-  check,
+  disabled,
   handleSubmit,
   bottomLine,
   bottomLink,
-  bottomLinkHref
+  bottomLinkHref,
+  setLoading
 }) => {
   return (
     <section className={`${styles.container}`}>
-      <div className={`${styles.logo}`}>
-        <img src={logo} alt="zuri" />
-      </div>
+      <a href="/">
+        <div className={`${styles.logo}`}>
+          <img src={logo} alt="zuri" />
+        </div>
+      </a>
       <div className={styles.FormWrapper}>
         <div className={`${styles.headers}`}>
           <h1 className={`${styles.header}`}>{header}</h1>
@@ -39,12 +40,12 @@ const FormWrapper = ({
           </Link>
         </div> */}
         <div className={`${styles.googleAuthDiv}`}>
-          <div className={`${styles.googleBtn}`}>
-            <a href="/" className="google">
-              <img src={google} alt="google" />
-              {googleHeader}
-            </a>
-          </div>
+          <GoogleAuth
+            className={`${styles.googleBtn}`}
+            googleHeader={googleHeader}
+            google={google}
+            setLoading={setLoading}
+          />
           <span className={`${styles.hrWrapper}`}>
             {/* <span className={`${styles.topLine}`}>{topLineText}</span> */}
             <hr className={`${styles.hrLeft}`} />
@@ -68,11 +69,8 @@ const FormWrapper = ({
 
           <div className={`${styles.btnContainer}`}>
             <input
-              className={`${
-                name || email || password || check
-                  ? styles.btn
-                  : styles.btnDisabled
-              }`}
+              disabled={!disabled}
+              className={`${styles.btn}`}
               value={submitButtonName}
               type="submit"
             />
@@ -104,15 +102,15 @@ const FormWrapper = ({
       </div>
 
       <div className={`${styles.footer}`}>
-        <a href="/contact-us" className={`${styles.footer_a}`}>
+        <Link to="/contact-us" className={`${styles.footer_a}`}>
           Contact Us
-        </a>
-        <a href="/" className={`${styles.footer_a}`}>
+        </Link>
+        <Link to="/legal" className={`${styles.footer_a}`}>
           Legal Policy
-        </a>
-        <a href="/" className={`${styles.footer_a}`}>
+        </Link>
+        <Link to="/about" className={`${styles.footer_a}`}>
           About Zurichat
-        </a>
+        </Link>
       </div>
     </section>
   )

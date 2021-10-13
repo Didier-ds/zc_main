@@ -1,15 +1,14 @@
-import React from 'react'
-import styles from '../styles/MessagesMedia.module.css'
-import theme11 from '../assets/images/theme7.png'
-import theme12 from '../assets/images/theme8.png'
-import theme13 from '../assets/images/theme9.png'
-import theme14 from '../assets/images/theme10.png'
-import theme15 from '../assets/images/theme11.png'
-import theme16 from '../assets/images/theme12.png'
-import theme17 from '../assets/images/theme13.png'
-import theme18 from '../assets/images/theme14.png'
-import theme19 from '../assets/images/theme15.png'
-import { useState } from 'react'
+import React, { useState } from "react"
+import styles from "../styles/MessagesMedia.module.css"
+import theme11 from "../assets/images/theme7.png"
+import theme12 from "../assets/images/theme8.png"
+import theme13 from "../assets/images/theme9.png"
+import theme14 from "../assets/images/theme10.png"
+import theme15 from "../assets/images/theme11.png"
+import theme16 from "../assets/images/theme12.png"
+import theme17 from "../assets/images/theme13.png"
+import theme18 from "../assets/images/theme14.png"
+import theme19 from "../assets/images/theme15.png"
 
 const MessagesMedia = () => {
   const [isChecked, setIsChecked] = useState(false)
@@ -18,20 +17,22 @@ const MessagesMedia = () => {
   // handleSubmit function on the form
   const handleSubmit = e => {
     e.preventDefault()
-    console.log(isChecked)
+    // console.log(isChecked)
   }
 
   React.useEffect(() => {
-    fetch('https://api.zuri.chat/', {
-      method: 'POST',
+    fetch("https://api.zuri.chat/", {
+      method: "POST",
       headers: {
         // authorization if any
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(isChecked)
     })
-      .then(res => console.log(res))
-      .catch(error => console.log(error))
+      .then(res => {
+        // console.log(res)
+      })
+      .catch(error => console.error(error))
   })
 
   return (
@@ -99,13 +100,13 @@ const MessagesMedia = () => {
         <img src={theme12} alt="theme12" className={styles.theme12} />
       </div>
       <div className={styles.change}>
-        To change your full or display name, head to{' '}
-        <p style={{ color: '#00B87C' }}>your profile.</p>
+        <p> To change your full or display name, head to{" "}
+        <span style={{ color: "#00B87C" }}>your profile.</span></p>
       </div>
       <div className={styles.bottom2}></div>
       <div className={styles.add}>Additional options</div>
       <div className={styles.info}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox}>
             <input
               type="checkbox"
@@ -119,7 +120,7 @@ const MessagesMedia = () => {
         </div>
       </div>
       <div className={styles.time}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox2}>
             <input
               type="checkbox"
@@ -131,7 +132,7 @@ const MessagesMedia = () => {
         <div className={styles.hour}>Show times with 24-hour clock</div>
       </div>
       <div className={styles.hexa}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox3}>
             <input
               type="checkbox"
@@ -147,11 +148,11 @@ const MessagesMedia = () => {
       <div className={styles.bottom3}></div>
       <div className={styles.emoji}>Emoji</div>
       <div className={styles.tone}>Default Skin Tone</div>
-      <div className={styles.choose}>
+      <p className={styles.choose}>
         Choose the default skin tone that will be used whenever you use certain
         emojis in
-      </div>
-      <div className={styles.choose2}>reactions and messages.</div>
+      </p>
+      <p className={styles.choose2}>reactions and messages.</p>
       <div className={styles.hands}>
         <img src={theme13} alt="theme13" className={styles.theme13} />
         <img src={theme14} alt="theme14" className={styles.theme14} />
@@ -161,7 +162,7 @@ const MessagesMedia = () => {
         <img src={theme18} alt="theme18" className={styles.theme18} />
       </div>
       <div className={styles.plntxt}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox4}>
             <input
               type="checkbox"
@@ -173,7 +174,7 @@ const MessagesMedia = () => {
         <div className={styles.plain}>Display emoji in plain text</div>
       </div>
       <div className={styles.jumb}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox5}>
             <input
               type="checkbox"
@@ -184,16 +185,16 @@ const MessagesMedia = () => {
         </form>
         <div className={styles.jumbomoji}>Show JUMBOMOJI</div>
       </div>
-      <div className={styles.versions}>
+      <p className={styles.versions}>
         Display the jumbo versions of emoji (up to 23 at a time!) in messages
         without text.
-      </div>
-      <div className={styles.example}>Here is an example</div>
+      </p>
+      <p className={styles.example}>Here is an example</p>
       <img src={theme19} alt="theme19" className={styles.theme19} />
       <div className={styles.bottom4}></div>
       <div className={styles.media}>In-line media and links</div>
       <div className={styles.images}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox6}>
             <input
               type="checkbox"
@@ -207,7 +208,7 @@ const MessagesMedia = () => {
         </div>
       </div>
       <div className={styles.websites}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox7}>
             <input
               type="checkbox"
@@ -221,7 +222,7 @@ const MessagesMedia = () => {
         </div>
       </div>
       <div className={styles.larger}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox8}>
             <input
               type="checkbox"
@@ -233,7 +234,7 @@ const MessagesMedia = () => {
         <div className={styles.than}>Even if they're larger than 2 MB</div>
       </div>
       <div className={styles.previews}>
-        <form onsubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.checkbox9}>
             <input
               type="checkbox"
@@ -246,15 +247,15 @@ const MessagesMedia = () => {
       </div>
       <div className={styles.bottom5}></div>
       <div className={styles.emails}>Bring emails into Zurichat</div>
-      <div className={styles.upload}>
+      <p className={styles.upload}>
         You can upload any important email to Slack by forwarding it to a
-      </div>
-      <div className={styles.upload2}>
+      </p>
+      <p className={styles.upload2}>
         unique email address. Slackbot will deliver the email and you can
-      </div>
-      <div className={styles.upload3}>
+      </p>
+      <p className={styles.upload3}>
         keep it private or share it with your team.
-      </div>
+      </p>
       <button className={styles.button}>
         <div className={styles.forward}>Get a forwarding address</div>
       </button>

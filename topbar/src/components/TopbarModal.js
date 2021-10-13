@@ -1,62 +1,88 @@
-import { useContext, useState, useEffect } from 'react'
-import { authAxios } from '../utils/Api'
-import { FaChevronRight } from 'react-icons/fa'
-import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react'
-import userAvatar from '../assets/images/user.svg'
+import { useContext, useState, useEffect } from "react"
+import { FaChevronRight } from "react-icons/fa"
+import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react"
+import axios from "axios"
+import defaultAvatar from "../assets/images/avatar_vct.svg"
 
-import styles from '../styles/Topbar.module.css'
-import { TopbarContext } from '../context/Topbar'
-import StatusBadgeModal from './StatusBadgeModal'
-import { ProfileContext } from '../context/ProfileModal'
-import Preferences from './Preferences'
-import EditProfile from './EditProfile'
-import MembersModal from './MembersModal'
-import Downloads from './Downloads'
-import PauseNotification from './PauseNotification'
-import SetStatusModal from './SetStatusModal'
+import styles from "../styles/Topbar.module.css"
+import { TopbarContext } from "../context/Topbar"
+import StatusBadgeModal from "./StatusBadgeModal"
+import { ProfileContext } from "../context/ProfileModal"
+import Preferences from "./Preferences"
+import EditProfile from "./EditProfile"
+import MembersModal from "./MembersModal"
+import Downloads from "./Downloads"
+import SetStatusModal from "./SetStatusModal"
 // react icons
 
 const TopbarModal = ({ members }) => {
-  const {
-    userProfileImage,
-    toggleModalState,
-    toggleProfileState,
-    user,
-    orgId
-  } = useContext(ProfileContext)
+  const { userProfileImage, toggleModalState, toggleProfileState, user } =
+    useContext(ProfileContext)
 
   const state = useContext(TopbarContext)
   const [showModal] = state.show
-  const [presence, setPresence] = state.presence
+  // const [username, setUsername] = state.username
   const [showStatus] = state.status
   const [showMembersModal] = state.modal
   const {
     onEmojiClick,
     openModal,
+    closeModal,
     openStatus,
     closeStatus,
     modalRef,
-    closeMembersModal
+    closeMembersModal,
+    toggleUserPresence,
+    reusableModal,
+    setReusableModal,
+    presence,
+    setPresence
   } = state
-  const [modal, setModal] = useState('')
-  const [pause, setPause] = useState(false)
 
-  const onSetPresence = () => {
-    setPresence(() => {
-      if (presence === 'true') {
-        return 'false'
-      } else {
-        return 'true'
+  const currentWorkspace = localStorage.getItem("currentWorkspace")
+  let token = sessionStorage.getItem("token")
+
+  useEffect(() => {
+    let user = JSON.parse(sessionStorage.getItem("user"))
+
+    if ((user && token) !== null) {
+      try {
+        axios
+          .get(`https://api.zuri.chat/organizations/${currentWorkspace}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+          .then(response => {
+            //Get Current Workspace Or Organization Name
+            localStorage.setItem("orgName", response.data.data.name)
+            // let userData = { currentWorkspace, ...response.data.data }
+          })
+      } catch (err) {
+        console.error(err)
       }
-    })
+    } else {
+      // console.log('YOU ARE NOT LOGGED IN, PLEASE LOG IN')
+    }
+  }, [])
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   }
+  const logout = () => {
+    window.location.href = "/signout"
+  }
+  const [pause, setPause] = useState(false)
+  const [statusModal, setStatusModal] = useState(false)
 
   let userPresence = null
   let toggleStatus = null
 
   switch (presence) {
-    case 'true':
-      userPresence = 'Set yourself as away'
+    case "true":
+      userPresence = "Set yourself as away"
       toggleStatus = (
         <div className={styles.online}>
           <div className={styles.activeCircle} />
@@ -64,40 +90,19 @@ const TopbarModal = ({ members }) => {
         </div>
       )
       break
-    case 'false':
-      userPresence = 'Set yourself as active'
+    default:
+      userPresence = "Set yourself as active"
       toggleStatus = (
         <div className={styles.online}>
           <div className={styles.awayCircle} />
           <p className={styles.away}>Away</p>
         </div>
       )
-      break
-    default:
-  }
-
-  const toggleUserPresence = () => {
-    onSetPresence()
-    authAxios
-      .post(`/organizations/${orgId}/members/${user._id}/presence`, presence)
-      .then(res => {
-        console.log('response1 =>', res)
-        return authAxios.get(`/organizations/${orgId}/members/${user._id}/`)
-      })
-      .then(res => {
-        console.log('response2', res.data.data.presence)
-      })
-      .catch(err => {
-        console.log(err?.response?.data)
-      })
   }
 
   useEffect(() => {
+    // console.log("user presence", user.presence)
     setPresence(user.presence)
-    // toggleUserPresence()
-    console.log('check for user', user)
-    console.log('auth axios presence', presence)
-    console.log('check for current presence', presence)
   }, [user])
 
   return (
@@ -113,6 +118,7 @@ const TopbarModal = ({ members }) => {
             <div className={styles.smileys}>
               <Picker
                 onEmojiClick={onEmojiClick}
+                pickerStyle={{ boxShadow: "none" }}
                 skinTone={SKIN_TONE_MEDIUM_DARK}
               />
             </div>
@@ -128,31 +134,41 @@ const TopbarModal = ({ members }) => {
             onClick={closeMembersModal}
             className={styles.membersModalOverlay}
           />
-          <MembersModal members={members} roomTitle={'announcements'} />
+          <MembersModal members={members} roomTitle={"announcements"} />
         </div>
       ) : null}
 
       {/* The section that shows the topbarprofile */}
       {showModal ? (
-        <section className={styles.topbarModal}>
-          <div className={styles.sectionOne}>
-            <div className={styles.oneLeft}>
-              <img
-                src={userProfileImage ? userProfileImage : userAvatar}
-                alt="profile-pic"
-              />
+        <div>
+          <section className={styles.topbarModal}>
+            <div className={styles.sectionOne}>
+              <div className={styles.oneLeft}>
+                <img
+                  src={
+                    userProfileImage !== "" ? userProfileImage : defaultAvatar
+                  }
+                  alt="profile-pic"
+                />
+              </div>
+
+              <div className={styles.oneRight}>
+                <h4>
+                  {user.user_name
+                    ? `${user.user_name
+                        .charAt(0)
+                        .toUpperCase()}${user.user_name.slice(1)}`
+                    : "Anonymous"}
+                </h4>
+                {toggleStatus}
+              </div>
             </div>
 
-            <div className={styles.oneRight}>
-              <h4>Praise.A</h4>
-              {toggleStatus}
+            <div className={styles.sectionTwo}>
+              <div className={styles.emoji}>{user?.status?.tag} </div>
+              <div className={styles.statusContent}>{user?.status?.text}</div>
             </div>
-          </div>
-
-          <div className={styles.sectionTwo}>
-            <StatusBadgeModal />
-          </div>
-
+            
           <div className={styles.sectionThree}>
             {/* <p onClick={openStatus}>Set a status</p> */}
             <p onClick={() => setStatusModal(!statusModal)}>Set a status</p>
@@ -170,69 +186,70 @@ const TopbarModal = ({ members }) => {
             >
               {userPresence}
             </p>
-            <div className={styles.pause}>
-              <p onClick={() => setPause(!pause)}>Pause Notifications</p>
-              <FaChevronRight className={styles.chevron} />
+            {/* <div className={styles.pause}>
+               <p onClick={() => setPause(!pause)}>Pause Notifications</p>
+               <FaChevronRight className={styles.chevron} />
+              </div>
+            {pause && <PauseNotification pause={pause} setPause={setPause} />}*/}
+          </div>
+
+            <hr className={styles.hr} />
+
+            <div className={styles.sectionFour}>
+              <p
+                onClick={() => {
+                  setReusableModal("edit profile")
+                  toggleModalState()
+                }}
+              >
+                Edit profile
+              </p>
+              <p
+                onClick={() => {
+                  toggleProfileState()
+                  openModal()
+                }}
+              >
+                View profile
+              </p>
+              <p
+                onClick={() => {
+                  setReusableModal("preference")
+                  toggleModalState()
+                }}
+              >
+                Preferences
+              </p>
             </div>
-            {pause && <PauseNotification pause={pause} setPause={setPause} />}
-          </div>
 
-          <hr className={styles.hr} />
+            <hr className={styles.hr} />
 
-          <div className={styles.sectionFour}>
-            <p
-              onClick={() => {
-                setModal('edit profile')
-                toggleModalState()
-              }}
-            >
-              Edit profile
-            </p>
-            <p
-              onClick={() => {
-                toggleProfileState()
-                openModal()
-              }}
-            >
-              View profile
-            </p>
-            <p
-              onClick={() => {
-                setModal('preference')
-                toggleModalState()
-              }}
-            >
-              Preferences
-            </p>
-          </div>
+            <div className={styles.sectionSix}>
+              <p
+                onClick={() => {
+                  setReusableModal("downloads")
+                }}
+              >
+                Downloads
+              </p>
+            </div>
 
-          <hr className={styles.hr} />
+            {reusableModal === "edit profile" && <EditProfile />}
 
-          <div className={styles.sectionSix}>
-            <p
-              onClick={() => {
-                setModal('downloads')
-              }}
-            >
-              Downloads
-            </p>
-          </div>
+            {reusableModal === "preference" && <Preferences />}
 
-          {modal === 'edit profile' && <EditProfile />}
+            {reusableModal === "downloads" && (
+              <Downloads setModal={setReusableModal} />
+            )}
 
-          {modal === 'preference' && <Preferences />}
+            <hr className={styles.hr} />
 
-          {modal === 'downloads' && <Downloads setModal={setModal} />}
-
-          <hr className={styles.hr} />
-
-          <div className={styles.sectionFive}>
-            <p>
-              {' '}
-              <a href="/signout">Sign out of Team Einstein workspace</a>{' '}
-            </p>
-          </div>
-        </section>
+            <div className={styles.sectionFive}>
+              <p onClick={logout}>Sign out</p>
+            </div>
+          </section>
+          <div className={styles.modalBackDrop} onClick={closeModal}></div>
+        </div>
       ) : null}
     </>
   )

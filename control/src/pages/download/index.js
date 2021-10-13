@@ -1,13 +1,10 @@
 import React from 'react'
+import DownloadsMobile from './DownloadsMobile'
 import DownloadsDesktop from './DownloadsDesktop'
-import DownloadsAndroid from './DownloadsAndroid'
-import DownloadsIOS from './DownloadsIOS'
-
-import { isIOS } from 'react-device-detect'
 
 const Download = () => {
   const [width, setWidth] = React.useState(window.innerWidth)
-  const breakpoint = 768
+  const breakpoint = 640
 
   React.useEffect(() => {
     const handleWindowResize = () => setWidth(window.innerWidth)
@@ -16,13 +13,7 @@ const Download = () => {
     return () => window.removeEventListener('resize', handleWindowResize)
   }, [])
 
-  return width > breakpoint ? (
-    <DownloadsDesktop />
-  ) : isIOS ? (
-    <DownloadsIOS />
-  ) : (
-    <DownloadsAndroid />
-  )
+  return width > breakpoint ? <DownloadsDesktop /> : <DownloadsMobile />
 }
 
 export default Download

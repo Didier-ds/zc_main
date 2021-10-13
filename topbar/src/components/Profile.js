@@ -1,29 +1,62 @@
-import React, { useContext, useState } from 'react'
-import styles from '../styles/Profile.module.css'
-
-import avatar from '../assets/avatar.png'
-import twitter from '../assets/twitter.svg'
-import linkedin from '../assets/linkedin.svg'
-import instagram from '../assets/instagram.svg'
-import { ProfileContext } from '../context/ProfileModal'
-import { TopbarContext } from '../context/Topbar'
-import EditProfile from './EditProfile'
-import Preferences from './Preferences'
-import { Dropdown } from './ProfileMore'
+import React, { useContext, useEffect, useState } from "react"
+import styles from "../styles/Profile.module.css"
+import defaultAvatar from "../assets/images/avatar_vct.svg"
+import facebook from "../assets/images/facebook.svg"
+import twitter from "../assets/images/twitter.svg"
+import linkedin from "../assets/images/linkedin.svg"
+import instagram from "../assets/images/instagram.svg"
+import github from "../assets/images/github.svg"
+import { BiUser } from "react-icons/bi"
+import { AiFillEdit } from "react-icons/ai"
+import { FaEllipsisH } from "react-icons/fa"
+import moment from "moment"
+import { ProfileContext } from "../context/ProfileModal"
+import { TopbarContext } from "../context/Topbar"
+import EditProfile from "./EditProfile"
+import Preferences from "./Preferences"
+import { Dropdown } from "./ProfileMore"
+import StatusBadgeModal from "./StatusBadgeModal"
+import { FiSettings } from "react-icons/fi"
+import { authAxios } from "../utils/Api"
+import { getCurrentWorkspace, getUser } from "../utils/common"
 
 const Profile = () => {
   const {
     userProfileImage,
     toggleModalState,
     showProfile,
-    toggleProfileState
+    toggleProfileState,
+    user
   } = useContext(ProfileContext)
+  // console.log('user status', user.status)
   const state = useContext(TopbarContext)
   const [dropdown, setDropdown] = useState(false)
-  const [modal, setModal] = useState('')
+  const [modal, setModal] = useState("")
+
+  const currentTime = moment().format("h:mm a")
+
+  const userData = getUser()
+  const currentWorkspace = getCurrentWorkspace()
+  const [workspaceData, setWorkspaceData] = React.useState({})
+
+  useEffect(() => {
+    if (currentWorkspace) {
+      authAxios
+        .get(`/organizations/${currentWorkspace}`)
+        .then(res => {
+          setWorkspaceData(res.data.data)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    }
+  }, [currentWorkspace])
+
 
   return (
-    <div className={showProfile ? styles.container : styles.containerNone}>
+    <div
+      className={showProfile ? styles.ProfileContainer : styles.containerNone}
+    >
       <svg
         className={styles.mobileBackButton}
         onClick={toggleProfileState}
@@ -57,16 +90,21 @@ const Profile = () => {
       </div>
       <div className={styles.content}>
         <img
-          className={styles.userAvatar}
-          src={userProfileImage}
+          className={`avatar ${styles.userAvatar}`}
+          src={userProfileImage !== "" ? userProfileImage : defaultAvatar}
           alt="avatar"
         />
         <div className={styles.userDetails}>
-          <h3>
-            Praise Aderinwale <span>3</span>
+          <h3 className={styles.h3users}>
+            {user.first_name
+              ? `${user.first_name} ${user.last_name} `
+              : "Anonnymous"}{" "}
+            {/* <span>{<StatusBadgeModal />  === '' ? <StatusBadgeModal />  :'0' }</span> */}
+            {/* <ProfileStatusBadgeModal /> */}
+            <StatusBadgeModal />
           </h3>
-          <p>Product Design</p>
-          <small>He/Him</small>
+
+          <p className={styles.myp}>{user.bio ? user.bio : "What you do"}</p>
         </div>
 
         <div className={styles.buttonGroupsMobile}>
@@ -74,95 +112,51 @@ const Profile = () => {
           <button
             onClick={() => {
               toggleModalState()
-              setModal(() => 'edit profile')
+              setModal(() => "edit profile")
               toggleProfileState()
             }}
           >
             Edit Profile
           </button>
+          <a className={styles.settingsLink} 
+            href={
+              workspaceData.creator_email === userData.email
+                ? "/admin/settings"
+                : "/settings"
+            }><FiSettings className={styles.iconSettings} /></a>
         </div>
 
         <div className={styles.buttonGroups}>
-          <button
-            onClick={() => {
-              setModal(() => 'edit profile')
-              toggleModalState()
-            }}
-          >
-            <svg
-              viewBox="0 0 12 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          <div>
+            <button
+              onClick={() => {
+                setModal(() => "edit profile")
+                toggleModalState()
+              }}
+              className={styles.ctaButton}
             >
-              <path
-                d="M10 10.5V9.5C10 8.39543 9.10457 7.5 8 7.5H4C2.89543 7.5 2 8.39543 2 9.5V10.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M6 5.5C7.10457 5.5 8 4.60457 8 3.5C8 2.39543 7.10457 1.5 6 1.5C4.89543 1.5 4 2.39543 4 3.5C4 4.60457 4.89543 5.5 6 5.5Z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Edit Profile
-          </button>
-          <button onClick={state.openStatus}>
-            <svg
-              viewBox="0 0 12 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+              <BiUser className={styles.ctaButtonIcon} />
+            </button>
+            <h6 className={styles.ctaText}> Edit Profile</h6>
+          </div>
+          <div>
+            <button onClick={state.openStatus} className={styles.ctaButton}>
+              <AiFillEdit className={styles.ctaButtonIcon} />
+            </button>
+            <h6 className={styles.ctaText}> Edit Status</h6>
+          </div>
+          <div>
+            <button
+              onClick={() => setDropdown(!dropdown)}
+              className={styles.ctaButton}
             >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M7 1.00005L9 3L3.5 8.5H1.5V6.5L7 1.00005Z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M1.5 11H10.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Edit Status
-          </button>
-          <button onClick={() => setDropdown(!dropdown)}>
-            <svg
-              viewBox="0 0 13 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M6.5 7C7.05228 7 7.5 6.55228 7.5 6C7.5 5.44772 7.05228 5 6.5 5C5.94772 5 5.5 5.44772 5.5 6C5.5 6.55228 5.94772 7 6.5 7Z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M10.5 7C11.0523 7 11.5 6.55228 11.5 6C11.5 5.44772 11.0523 5 10.5 5C9.94772 5 9.5 5.44772 9.5 6C9.5 6.55228 9.94772 7 10.5 7Z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M2.5 7C3.05228 7 3.5 6.55228 3.5 6C3.5 5.44772 3.05228 5 2.5 5C1.94772 5 1.5 5.44772 1.5 6C1.5 6.55228 1.94772 7 2.5 7Z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            More
-          </button>
+              <FaEllipsisH className={styles.ctaButtonIcon} />
+            </button>
+            <h6 className={styles.ctaText}>More</h6>
+          </div>
           {dropdown && <Dropdown />}
-          {modal === 'preference' && <Preferences />}
-          {modal === 'edit profile' && <EditProfile />}
+          {modal === "preference" && <Preferences />}
+          {modal === "edit profile" && <EditProfile />}
         </div>
 
         <div className={`${styles.moreInfo} ${styles.mobile}`}>
@@ -171,33 +165,38 @@ const Profile = () => {
         </div>
         <div className={`${styles.moreInfo} ${styles.mobile}`}>
           <div className={styles.infoTitle}>Pronouns</div>
-          <div className={styles.infoContent}>Her</div>
+          <div className={styles.infoContent}>
+            {user.pronouns ? user.pronouns : "null"}
+          </div>
         </div>
         <div className={styles.moreInfo}>
           <div className={styles.infoTitle}>Display name</div>
-          <div className={styles.infoContent}>Praise.A</div>
+          <div className={styles.infoContent}>
+            {user.display_name ? user.display_name : user.username}
+            {/* {user.display_name ? user.display_name : user.user_name} */}
+          </div>
         </div>
         <div className={`${styles.moreInfo} ${styles.mobile}`}>
           <div className={styles.infoTitle}>Status</div>
           <div className={styles.infoContent}>
-            <span>5</span>
+            <span>{user?.status?.text !== "" ? user?.status?.text : "0"}</span>
           </div>
         </div>
         <div className={styles.moreInfo}>
           <div className={styles.infoTitle}>Email address</div>
-          <a href="mailto:praise@example.com" className={styles.infoLink}>
-            praise@example.com
-          </a>
+          <div className={styles.infoContent}>
+            {user.email ? user.email : "null"}
+          </div>
         </div>
         <div className={styles.moreInfo}>
           <div className={styles.infoTitle}>Phone number</div>
-          <a href="tel:2348101234567" className={styles.infoLink}>
-            +234 810 123 4567
-          </a>
+          <div className={styles.infoContent}>
+            {user.phone ? user.phone : "null"}
+          </div>
         </div>
         <div className={styles.moreInfo}>
           <div className={styles.infoTitle}>Local time</div>
-          <div className={styles.infoContent}>11:33 PM</div>
+          <div className={styles.infoContent}>{currentTime}</div>
         </div>
 
         <div className={styles.social}>
@@ -205,10 +204,16 @@ const Profile = () => {
             <img src={linkedin} alt="linkedin" />
           </div>
           <div className={styles.icons}>
-            <img src={instagram} alt="instagram" />
+            <img src={facebook} alt="linkedin" />
           </div>
           <div className={styles.icons}>
-            <img src={twitter} alt="twitter" />
+            <img src={github} alt="linkedin" />
+          </div>
+          <div className={styles.icons}>
+            <img src={twitter} alt="linkedin" />
+          </div>
+          <div className={styles.icons}>
+            <img src={instagram} alt="linkedin" />
           </div>
         </div>
       </div>

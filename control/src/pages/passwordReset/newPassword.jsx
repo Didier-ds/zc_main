@@ -1,29 +1,59 @@
 import React, { useState } from 'react'
 import Logo from '../../component-assets/zuri.svg'
 import authBg from '../../component-assets/backg.svg'
-import { withRouter } from 'react-router-dom'
+import { withRouter, useLocation } from 'react-router-dom'
 import AuthInputBox from '../../components/AuthInputBox'
 import styles from '../../component-styles/ResetPassword.module.css'
 import axios from 'axios'
 import Button from '../../components/Button'
+import PasswordSuccesful from './passwordSuccesful'
 
-const NewPassword = ({ resetCode }) => {
-  const [password, setPassword] = useState('')
-  const handleSubmit = async () => {
-    const res = await axios.post('api.zuri.chat/account/update-password', {
-      password
-    })
-    // + resetCode,
+const NewPassword = () => {
+  function useQuery() {
+    return new URLSearchParams(useLocation().search)
   }
+  let query = useQuery()
+  const resetCode = query.get('code')
+
+  const [password, setPassword] = useState('')
+  const [confirm_password, setcPassword] = useState('')
+  const [showDialog, setShowDialog] = useState(false)
+  const open = () => setShowDialog(true)
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    updatepass()
+  }
+
+  const updatepass = async () => {
+    try {
+      const res = await axios.post(
+        `https://api.zuri.chat/account/update-password/${resetCode}`,
+        {
+          password,
+          confirm_password
+        }
+      )
+    
+      // console.log(res.data)
+      // alert('password reset!', res.data)
+      open()
+    } catch (err) {
+      alert(err)
+      console.error(err)
+    }
+  }
+
 
   return (
     <main id={styles.authPageWrapper}>
-      <aside id={styles.authAsideContainer} className={styles.display_none}>
+      {showDialog && <PasswordSuccesful/>}
+      {/* <aside id={styles.authAsideContainer} className={styles.display_none}>
         <div id={styles.authImageWrapper}>
           <img src={authBg} alt="backgroundImage" />
-          <div id={styles.aside_txt}></div>
+          <div id={styles.asideText}></div>
         </div>
-      </aside>
+      </aside> */}
       <section id={``}>
         {/* logo div  */}
         <div className={``}>
@@ -31,10 +61,9 @@ const NewPassword = ({ resetCode }) => {
         </div>
         {/* header text  */}
         <div className={``}>
-          <h4 className={styles.headerText}>Change Password</h4>
+          <h4 className={styles.headerText}>Recover Password</h4>
           <p>
-            Enter the email address you registered with, a reset link will be
-            sent to your email!
+            Create a new password for your account
           </p>
         </div>
         {/* form section  */}
@@ -47,21 +76,24 @@ const NewPassword = ({ resetCode }) => {
             placeholder="Enter your new password"
             value={password}
             setValue={setPassword}
-            // onFocus={displayImage}
             // error={error}
           />
 
-          {/* <AuthInputBox
-                className={`${styles.inputElement}`}
-                id="cpassword"
-                name="Confirm password"
-                type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                setValue={setConfirmPassword}
-                // error={error}
-              /> */}
-          <Button className={styles.button} onClick={handleSubmit}>
+            <AuthInputBox
+            className={`${styles.inputElement}`}
+            id="confirm_password"
+            name="confirm Password"
+            type="password"
+            placeholder="confirm your new password"
+            value={ confirm_password}
+            setValue={setcPassword}
+            // error={error}
+          />
+          {/* <div style={{fontSize:"14px"}}>
+            {(password != confirm_password)? <div>sorry password dont match</div>:null}
+          </div> */}
+
+          <Button className={styles.button} onClick={ handleSubmit}  >
             Continue
           </Button>
         </form>

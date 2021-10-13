@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import LaunchPageCSS from '../styles/LaunchPage.module.css'
+import { Helmet } from 'react-helmet'
 
 function LaunchPage() {
   const [user, setUser] = useState(null)
@@ -14,6 +15,9 @@ function LaunchPage() {
   }, [])
   return (
     <div>
+      <Helmet>
+        <title>Launch workspace - Zuri Chat</title>
+      </Helmet>
       <article className={LaunchPageCSS.wrapper}>
         <div className={LaunchPageCSS.email}>
           {' '}
@@ -24,28 +28,19 @@ function LaunchPage() {
             <span className={LaunchPageCSS.zuriLogo}></span> Zuri Chat
           </div>
           <div className={LaunchPageCSS.bigLetter}>
-            <h1>TB</h1>
+            <h1>{projectname.slice(0, 2).toUpperCase()}</h1>
           </div>
           {/* Desktop View */}
           <h1 className={LaunchPageCSS.brandhub}> Launching {projectname}</h1>
 
           <div className={LaunchPageCSS.openZuriDesktop}>
-            Click <a href="https://zuri.chat/home"> "Open Zuri Chat"</a> to
-            launch the desktop app
+            Click <a href="/choose-workspace"> "Open Zuri Chat"</a> to launch the desktop
+            app
           </div>
           {/* end */}
-          <a href="" className={LaunchPageCSS.openZuri}>
+          <a href="/choose-workspace" className={LaunchPageCSS.openZuri}>
             Open Zuri Chat App
           </a>
-          <p>
-            Don't have the app ? You can also{' '}
-            <a
-              href="https://zuri.chat/home"
-              className={LaunchPageCSS.inBrowser}
-            >
-              use Zuri Chat in your browser
-            </a>
-          </p>
         </div>
       </article>
     </div>

@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Login from './pages/login'
 import SignUp from './pages/signup'
+import SignOut from './pages/signout/index'
 import Workspace from './pages/workspace/components/Workspace'
 import LandingPage from './pages/LandingPage'
+import DAO_Features from './pages/DAO-Features'
 // password block
 import ResetPassword from './pages/passwordReset/index'
 import NewPassword from './pages/passwordReset/newPassword'
@@ -11,17 +13,19 @@ import CookiesSetting from './pages/cookiesSettings'
 import Cookies from './pages/cookies'
 import Features from './pages/features'
 import Resources from './pages/resources'
+import Help from './pages/Help'
 import Pricing from './pages/pricing'
 import Security from './pages/security'
+import Invite from './pages/inviteScreen'
 import Inviterequest from './pages/InviteRequest/InviteRequest'
 import SendRequest from './pages/InviteRequest/SendRequest'
 import ContactUs from './pages/contact-us'
+import Search from './pages/search'
 import AppsAndIntegrations from './pages/apps-integration'
-import Events from './pages/events/components/EventsMainWrapper'
 import Download from './pages/download'
+import DownloadsMac from './pages/download/DownloadsMac'
 import Careers from './pages/careers'
 import MarketPlace from './pages/marketplace/marketplace'
-import Blogs from './pages/blogs'
 import Settings from './pages/settings'
 import ConfirmPassword from './pages/settings/components/ConfirmPassword'
 import AccDeactivated from './pages/settings/components/AccDeactivated'
@@ -31,6 +35,23 @@ import PrivateRoute from './pages/settings/Utils/PrivateRoute'
 import ConfirmDeactivation from './pages/settings/components/ConfirmDeactivation'
 import CreateWorkSpaces from './pages/createworkspace/components/WorkSpaceContext'
 import PrivacyPolicy from './pages/privacy-policy/index'
+import NotFoundPage from './pages/404'
+import Billing from './pages/admin/Billing'
+import Blog from './pages/blogs'
+import Homepage from './pages/home'
+import Permissions from './pages/admin/Permissions'
+import SettingsHome from './pages/admin/Settings/index'
+import About from './pages/about/index'
+import AdminSettingsTab from './pages/admin/Settings/components/AdminSettingsTab'
+import TermsOfService from './pages/termsOfService'
+import RedirectRoute from './pages/redirect'
+import Plugins from './pages/plugins'
+
+import Legal from './pages/legal'
+import ZurichatBlog from './pages/blogs/components/zurichatBlog'
+
+import Ebooks from './pages/ebooks'
+
 
 // useEffect(() => {
 //     localStorage.setItem('input',input);
@@ -48,20 +69,32 @@ const App = () => {
         <Route path="/" exact>
           <LandingPage />
         </Route>
-        <Route path="/blogs">
-          <Blogs />
-        </Route>
-        <Route path="/login">
+        <RedirectRoute path="/login">
           <Login />
-        </Route>
+        </RedirectRoute>
         <Route path="/signup">
           <SignUp />
+        </Route>
+        <Route path="/createworkspace">
+          <CreateWorkSpaces />
+        </Route>
+        <Route path="/signout">
+          <SignOut />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/help">
+          <Help />
         </Route>
         <Route path="/choose-workspace">
           <Workspace />
         </Route>
         <Route path="/features">
           <Features />
+        </Route>
+        <Route path="/invites/:id">
+          <Invite />
         </Route>
         <Route path="/invite-request">
           <Inviterequest />
@@ -72,17 +105,29 @@ const App = () => {
         <Route path="/resources">
           <Resources />
         </Route>
+        <Route path="/search">
+          <Search />
+        </Route>
+        <Route path="/blog">
+          <Blog />
+        </Route>
         <Route path="/pricing">
           <Pricing />
+        </Route>
+        <Route path="/plugins">
+          <Plugins />
         </Route>
         <Route path="/security">
           <Security />
         </Route>
-        <Route path="/events">
-          <Events />
-        </Route>
-        <Route path="/download-app">
+        <Route path="/downloads">
           <Download />
+        </Route>
+        <Route path="/ebooks">
+          <Ebooks />
+        </Route>
+        <Route path="/downloadsMac">
+          <DownloadsMac />
         </Route>
         <Route path="/contact-us">
           <ContactUs />
@@ -90,14 +135,31 @@ const App = () => {
         <Route path="/careers">
           <Careers />
         </Route>
+
+        <Route path="/legal">
+          <Legal />
+        </Route>
+
         <Route path="/privacy">
           <PrivacyPolicy />
         </Route>
-        <Route path="/marketplace" exact>
-          <MarketPlace />
+        <Route path="/terms">
+          <TermsOfService />
         </Route>
+        <Route path="/legal">
+          <Legal />
+        </Route>
+        <Route path="/dao-features">
+          <DAO_Features />
+        </Route>
+        {/* <Route path="/marketplace" exact>
+          <MarketPlace />
+        </Route> */}
         <Route path="/apps-integrations">
           <AppsAndIntegrations />
+        </Route>
+        <Route path="/ZurichatBlog">
+          <ZurichatBlog />
         </Route>
         {/* ----------------settings routes opened------------------------ */}
         <PrivateRoute
@@ -113,6 +175,17 @@ const App = () => {
         />
         <PrivateRoute path="/session-signout" component={AllSessionSignOut} />
         <PrivateRoute path="/settings" exact component={Settings} />
+        <PrivateRoute path="/admin/settings" exact component={SettingsHome} />
+        <PrivateRoute
+          path="/admin/settings/billings"
+          exact
+          component={Billing}
+        />
+        {/* <PrivateRoute
+          path="/admin/settings/permission"
+          exact
+          component={AdminSettingsTab}
+        /> */}
         <PrivateRoute path="/settings/:id" component={ConfirmPassword} />
         {/* ----------------settings routes closed----------------- */}
         <Route path="/reset-password">
@@ -127,7 +200,8 @@ const App = () => {
         <Route path="/cookies-banner">
           <Cookies />
         </Route>
-        <CreateWorkSpaces />
+
+        {/* <Route component={NotFoundPage} /> */}
       </Switch>
     </BrowserRouter>
   )

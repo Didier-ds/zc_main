@@ -1,129 +1,299 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import Select from 'react-select';
+import { ProfileContext } from '../context/ProfileModal';
 import styles from '../styles/AdvancedSettings.module.css'
 
+import {authAxios} from "../utils/Api"
+
+const colorOptions = [
+  { value: 'Anouncement', label: 'Anouncement'},
+  { value: 'random', label: 'random'},
+  { value: 'general', label: 'general'},
+];
+
+const customStyles = {
+  control: base => ({
+    ...base,
+    height: "3.5rem",
+    minHeight: "3.5rem",
+    border: "1px solid #DADADA",
+    borderRadius: "4px",
+    fontSize: ".75rem",
+    "&:hover": {
+      borderColor: "#00B87C"
+    },
+    "&:active": {
+      borderColor: "#00B87C"
+    }
+  })
+}
+
 const AdvancedSettings = () => {
+
+  const { user } = useContext(ProfileContext)
+
+  // console.log("user", user.settings.advanced)
+  const [advance, setAdvance] = useState(user.settings.advanced)
+    
+    const updateAdvanceSettings = (advance) => {
+      authAxios.patch(`/organizations/${user.org_id}/members/${user._id}/settings/advanced`, advance)
+      .then(res => {
+        // console.log(res)
+      })
+      .catch(err => {
+        // console.log(err)
+      })
+  }
+
+  const handleSelect = (selectedOptions) => {
+    let options = [];
+
+    selectedOptions.forEach(option => {
+      options.push(option.value)
+    })
+
+    let newAdvance = {...advance, excluded_channels: options}
+
+    updateAdvanceSettings(newAdvance)
+  }
+
   return (
-    <div className={styles.container}>
-      <div className={styles.input}>
+    <div className={styles.inputsContainer}>
+      <div className={styles.spacingLeft}>
         <h5 className={styles.head}>Input options</h5>
-        <div className={styles.check}>
-          <div className={styles.checktype}>
-            <input type="checkbox" name="" id="" />
-            <div className={styles.typing}>
-              <span>
-                {' '}
-                When typing code with "",{' '}
-                <button type="button" className={styles.btn}>
-                  Enter
-                </button>
-                &nbsp; should send the message{' '}
-              </span>
-              <br /> With this ticket, use{' '}
-              <button className={styles.btn}>Shift</button>{' '}
-              <button className={styles.btn}>Enter</button> to send
-            </div>
-          </div>
-          <div className={styles.checkformat}>
-            <input type="checkbox" name="" id="" />
-            <div className={styles.typing}>
-              <span> Format messages with markup</span> <br />
-              The text formatting toolbar won't show in the composer
-            </div>
+
+        <div className={styles.checkInputGroup}>
+          <input 
+            type="checkbox" 
+            checked={advance.input_option.dont_send_with_enter}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, input_option: {...advance.input_option, dont_send_with_enter: !advance.input_option.dont_send_with_enter}, press_enter_to: "send_message"}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}
+            name="" id="" 
+            className={styles.chekedInput} 
+          />
+          <div className={styles.inputText}>
+            <p className={styles.inputParagraph}>
+              When typing code with ‘’’’, should send the message
+            </p>
+            <p className={styles.inputParagraph60}>With this ticked, use <span className={styles.highlights}>Shift</span> to send</p>
           </div>
         </div>
-        <p className={styles.head}>
-          When writing a message, press{' '}
-          <button className={styles.btn}>Enter</button>
-        </p>
-        <div className={styles.radio}>
-          <div className={styles.radiosend}>
-            <input type="radio" name="" id="" />
-            <div className={styles.send}>Send the message</div>
-          </div>
-          <div className={styles.radiostart}>
-            <input type="radio" name="" id="" />
-            <div className={styles.start}>
-              Start a new line (use
-              <button className={styles.btn}>Ctrl</button>
-              <button className={styles.btn}>Enter</button> to send )
-            </div>
+        <div className={styles.checkInputGroup}>
+          <input type="checkbox" 
+            name="" id="" 
+            className={styles.chekedInput} 
+            checked={advance.input_option.format_messages}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, input_option: {...advance.input_option, format_messages: !advance.input_option.format_messages}, press_enter_to: "send_message"}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}
+          />
+          <div className={styles.inputText}>
+            <p className={styles.inputParagraph}>
+              Format messages with markup
+            </p>
+            <p className={styles.inputParagraph40}>
+              The text formatting toolbar won’t show in the composer
+            </p>
           </div>
         </div>
+        <p className={styles.head}>When writing a message, press </p>
+        
+        <div className={styles.radioInputContainer}>
+          <input 
+            className={styles.radioInput} 
+            type="radio" 
+            name="writting_message" 
+            id="writting_message1" 
+            checked={advance.press_enter_to === "send_message"}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, press_enter_to: "send_message"}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}
+          />
+          <div className={styles.radioInfo} htmlFor="writting_message1">Send the message</div>
+        </div>
+        <div className={styles.radioInputContainer}>
+          <input 
+            className={styles.radioInput} 
+            type="radio" 
+            name="writting_message" 
+            id="writting_message2" 
+            checked={advance.press_enter_to === "start_new_line"}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, press_enter_to: "start_new_line"}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}
+          />
+          <div className={styles.radioInfo} htmlFor="writting_message2">Start a new line ( use <span className={styles.highlights}>Ctrl</span> <span className={styles.highlights}>Enter</span> to send )</div>
+        </div>
+
       </div>
       <div className={styles.line}></div>
-      <div className={styles.search}>
+      
+      <div className={styles.spacingLeft}>
         <h5 className={styles.head}>Search Options</h5>
-        <div className="check">
-          <div className={styles.checktype}>
-            <input type="checkbox" name="" id="" />
-            <div className={styles.behaviour}>
-              <button className={styles.btn}>Ctrl</button>
-              <button className={styles.btn}>F</button>
-              <span> Starts a Zurichat chat</span> <br /> Overrides normal
-              behaviour in search behaviour
-            </div>
-          </div>
-          <div className={styles.checkformat}>
-            <input type="checkbox" name="" id="" />
-            <div className={styles.browser}>
-              <button className={styles.btn}>Ctrl</button>
-              <button className={styles.btn}>K</button>
-              <span> Starts the quick switcher </span>
-              <br /> Overrides normal behaviour in some browsers
-            </div>
-          </div>
-        </div>
-        <h5 className={styles.head}>
-          {' '}
-          Exclude these channels from search results:
-        </h5>
-        <div className="barcontainer">
-          <div className={styles.bar}>
-            <input
-              type="text"
-              className={styles.bartype}
-              placeholder="Type a channel name..."
-              name=""
-              id=""
-            />
+
+        <div className={styles.checkInputGroup2}>
+          <input 
+            type="checkbox" 
+            name="" id="" 
+            className={styles.chekedInput} 
+            checked={advance.search_option.start_slack_search}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, search_option: { ...advance.search_option, start_slack_search: !advance.search_option.start_slack_search}}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}
+          />
+          <div className={styles.inputText2}>
+            <p className={styles.inputParagraph}>
+              <span className={styles.highlights}>Ctrl</span> <span className={styles.highlights}>F</span> Starts a Zurichat search
+            </p>
+            <p className={styles.inputParagraph60}>Overrides normal behavaiour in search behaviour</p>
           </div>
         </div>
+        <div className={styles.checkInputGroup2}>
+          <input 
+            type="checkbox" 
+            name="" id="" 
+            className={styles.chekedInput} 
+            checked={advance.search_option.start_quick_switcher}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, search_option: { ...advance.search_option, start_quick_switcher: !advance.search_option.start_quick_switcher}}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}
+          />
+          <div className={styles.inputText2}>
+            <p className={styles.inputParagraph}>
+              <span className={styles.highlights}>Ctrl</span> <span className={styles.highlights}>K</span> Starts the quick switcher
+            </p>
+            <p className={styles.inputParagraph60}>Overrides normal behavaiour in some browsers</p>
+          </div>
+        </div>
+
+        <h5 className={styles.head}>Exclude these channels from search results:</h5>
+        <Select
+          isMulti
+          name="colors"
+          styles={customStyles}
+          options={colorOptions}
+          className={styles.multiSelect}
+          classNamePrefix="select"
+          placeholder="Type a channel name..."
+          onChange={(selectedOptions) => {
+            handleSelect(selectedOptions)
+          }}
+        />
       </div>
+
+
+
       <div className={styles.line}></div>
-      <div className={styles.options}>
+
+
+      <div className={styles.spacingLeft}>
         <h5 className={styles.head}>Other Options</h5>
-        <div className={styles.check}>
-          <div className={styles.checkkeys}>
-            <input type="checkbox" name="" id="" />
-            <div className={styles.keys}>
-              <button className={styles.btn}>Page up</button>,
-              <button className={styles.btn}>Page Down</button>,
-              <button className={styles.btn}>Home</button> and
-              <button className={styles.btn}>End</button>
+
+        <div className={styles.checkInputGroup2}>
+          <input 
+            type="checkbox" 
+            name="" id="" 
+            className={styles.chekedInput}
+            checked={advance.other_option.key_scroll_messages}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, other_option: { ...advance.other_option, key_scroll_messages: !advance.other_option.key_scroll_messages}}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}
+          />
+          <div className={styles.inputText2}>
+            <p className={styles.inputParagraph}>
+              <span className={styles.highlights}>Page Up</span> 
+              <span className={styles.highlights}>Page Down</span>
+              <span className={styles.highlights}>Home</span>
+              <span className={styles.highlights}>End</span>
               keys always scroll messages
-            </div>
-          </div>
-          <div className={styles.ask}>
-            <input type="checkbox" name="" id="" />
-            <p>
-              Ask if I want to toggle my away status when I log in after having
-              set myself away
             </p>
           </div>
-          <div className={styles.survey}>
-            <input type="checkbox" name="" id="" />
-            <p>
-              Send me occasional survey via Zurichat bot <br />
-              <span>
-                {' '}
-                We're working to make Zurichat better. We'd always love to hear
-                your thoughts
-              </span>
+        </div>
+        <div className={styles.checkInputGroup2}>
+          <input 
+            type="checkbox" name="" id="" 
+            className={styles.chekedInput} 
+            checked={advance.other_option.toggle_away_status}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, other_option: { ...advance.other_option, toggle_away_status: !advance.other_option.toggle_away_status}}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}  
+          />
+          <div className={styles.inputText}>
+            <p className={styles.inputParagraph}>
+            Ask if I want to toggle my away status when I log in after having set myself away 
             </p>
           </div>
-          <div className={styles.warn}>
-            <input type="checkbox" name="" id="" />
-            <p>Warn me about potential malicious links</p>
+        </div>
+        <div className={styles.checkInputGroup2}>
+          <input 
+            type="checkbox" name="" id="" 
+            className={styles.chekedInput} 
+            checked={advance.other_option.send_survey}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, other_option: { ...advance.other_option, send_survey: !advance.other_option.send_survey}}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }} 
+          />
+          <div className={styles.inputText}>
+            <p className={styles.inputParagraph}>
+              Send me occassional survey via Zurichat bot
+            </p>
+            <p className={styles.inputParagraph40}>We’re working to make Zurichat better. We’d always love to hear your thoughts</p>
+          </div>
+        </div>
+        <div className={styles.checkInputGroup2}>
+          <input 
+            type="checkbox" name="" id="" 
+            className={styles.chekedInput} 
+            checked={advance.other_option.warn_against_links}
+            onClick={() => {
+              if(advance !== undefined) {
+                const newAdvance = {...advance, other_option: { ...advance.other_option, warn_against_links: !advance.other_option.warn_against_links}}
+                setAdvance(newAdvance)
+                updateAdvanceSettings(newAdvance)
+              }
+            }}   
+          />
+          <div className={styles.inputText}>
+            <p className={styles.inputParagraph}>
+              Warn me about potential malicious links
+            </p>
           </div>
         </div>
       </div>

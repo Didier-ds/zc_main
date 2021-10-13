@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import { withRouter } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { withRouter, useHistory, Link } from 'react-router-dom'
 import AuthInputBox from '../../components/AuthInputBox'
 import FormWrapper from '../../components/AuthFormWrapper'
 import styles from '../../component-styles/AuthFormElements.module.css'
 import axios from 'axios'
 import EmailVerification from './email-verify'
+import { Helmet } from 'react-helmet'
 // import { Link } from 'react-router-dom'
 // import authBg1 from './assets/auth_bg1.svg'
 // import authBg2 from './assets/auth_bg2.svg'
@@ -18,6 +19,8 @@ const Signup = () => {
   const [password, setPassword] = useState('')
   const [tos, setTos] = useState(false)
   const [error, seterror] = useState('')
+  const [nameerror, setnameerror] = useState('')
+  const [passworderror, setpassworderror] = useState('')
   const [emailerror, setemailerror] = useState('')
   const [showDialog, setShowDialog] = useState(false)
 
@@ -35,8 +38,38 @@ const Signup = () => {
   //   console.log(images[i], i)
   // }
 
+  const history = useHistory()
+
+  useEffect(() => {
+    const userInfo = sessionStorage.getItem(`user`)
+    const redirect = sessionStorage.getItem(`workSpaceInviteRedirect`)
+
+    // if (userInfo && userInfo !== null) history.push(redirect)
+  }, [history])
+
   const handleSubmit = async e => {
     e.preventDefault()
+
+    if (!name) {
+      setnameerror(`Enter an email address`)
+      return
+    } else {
+      setnameerror(``)
+    }
+
+    if (!password) {
+      setpassworderror(`Enter a Password`)
+      return
+    } else {
+      setpassworderror(``)
+    }
+
+    if (!tos) {
+      seterror(`You must agree to terms and conditions`)
+      return
+    } else {
+      seterror(``)
+    }
 
     //Seperate user fullname
     const seperateName = name.split(' ')
@@ -59,17 +92,20 @@ const Signup = () => {
       })
       .then(response => {
         const { data, message } = response.data
-        console.log(response.data)
+        // console.log(response.data)
         setShowDialog(true)
 
         //Store token in localstorage
         sessionStorage.setItem('user_id', data.InsertedId)
+        localStorage.setItem('newUserEmail', JSON.stringify(email))
+        localStorage.setItem('userUserPassword', JSON.stringify(password))
 
         //Display message
-        alert(message) //Change this when there is a design
+        // alert(message) //Change this when there is a design
 
         setTimeout(() => {
           //Redirect to some other page
+          // history.push('/createworkspace');
         }, 2000)
       })
       .catch(error => {
@@ -91,6 +127,10 @@ const Signup = () => {
           <img src={images[currentImage]} alt="backgroundImage" />
         </div>
       </aside> */}
+
+      <Helmet>
+        <title>Sign Up - Zuri Chat</title>
+      </Helmet>
       <section id={styles.authFormContainer}>
         <FormWrapper
           header="Create Account"
@@ -98,11 +138,8 @@ const Signup = () => {
           googleHeader="Sign up with Google"
           topLineText="OR"
           submitButtonName="Sign up"
-          name={name}
+          disabled={name && email && password && tos}
           error={error}
-          email={email}
-          password={password}
-          check={tos}
           handleSubmit={handleSubmit}
           bottomLine="Already have an account?"
           bottomLink="Log in"
@@ -117,7 +154,7 @@ const Signup = () => {
             value={name}
             setValue={setName}
             // onFocus={displayImage}
-            // error={error}
+            error={nameerror}
           />
           <AuthInputBox
             className={`${styles.inputElement}`}
@@ -139,7 +176,7 @@ const Signup = () => {
             value={password}
             setValue={setPassword}
             // onFocus={displayImage}
-            // error={error}
+            error={passworderror}
           />
           <div className={`${styles.tos}`}>
             <input
@@ -154,8 +191,8 @@ const Signup = () => {
             />
             <span className={`${styles.tosText}`}>
               I agree to Zurichat's {''}
-              <a href="/">Terms of services{''} </a>&
-              <a href="/"> {''}Privacy</a>
+              <Link to="/terms">Terms of services{''} </Link>&
+              <Link to="/privacy"> {''}Privacy</Link>
             </span>
           </div>
         </FormWrapper>

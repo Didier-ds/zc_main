@@ -1,30 +1,64 @@
-import React from 'react'
-import style from './styles/LandingPage.module.css'
-import hero_img from './assets/hero-img.png'
-import logo1 from './assets/logo_hng.png'
-import logo2 from './assets/logo_i4g.png'
-import logo3 from './assets/logo_nucle.png'
-import logo4 from './assets/logo_camphouse.png'
-import logo5 from './assets/logo_zuri.png'
-import ft_img1 from './assets/ft_img1.png'
-import ft_img2 from './assets/ft_img2.png'
-import ft_img3 from './assets/ft_img3.png'
-import ft_img4 from './assets/ft_img4.png'
-import sign_up_img from './assets/sign_up_img.png'
+/* eslint-disable react/prop-types */
+import React from "react"
+import style from "./styles/LandingPage.module.css"
+import hero_img from "./assets/MacBookAir.svg"
+import logo_hng from "./assets/logo_hng.svg"
+import logo_i4g from "./assets/logo_i4g.svg"
+import logo_camphouse from "./assets/logo_camphouse.svg"
+import logo_zuri from "./assets/logo_zuri.svg"
+import ft_img1 from "./assets/ft_img1.svg"
+import ft_img2 from "./assets/ft_img2.svg"
+import ft_img3 from "./assets/ft_img3.svg"
+import ft_img4 from "./assets/ft_img4.svg"
+import sign_up_img from "./assets/sign_up_img.svg"
+import arrow_right from "./assets/ArrowRight.svg"
 
-import Header from '../../components/Header'
-import Footer from '../../components/Footer'
+import Header from "../../components/Header"
+import Footer from "../../components/Footer"
 
-import { Link } from 'react-router-dom'
-import Cookies from '../cookies'
-import Subscribe from './components/Subscribe'
+import { Link, useHistory } from "react-router-dom"
+import Cookies from "../cookies"
+import Subscribe from "./components/Subscribe"
+import { Helmet } from "react-helmet"
 
 export default function Homepage() {
   const { useState, useEffect } = React
 
   const [loading, setLoading] = useState(true)
-  const allowCookie = sessionStorage.getItem('cookies-allow')
-  const declineCookie = sessionStorage.getItem('cookies-decline')
+
+  // For create workspace redirect start
+
+  let history = useHistory()
+
+  const createWorkspaceRedirect = () => {
+    useEffect(() => {
+      const userInfo = sessionStorage.getItem(`user`)
+
+      if (userInfo && userInfo !== null) {
+        history.push("/createworkspace")
+      } else {
+        history.push("/signup")
+      }
+    }, [history])
+  }
+
+  // create workspace redirect end
+
+  const cookieStorage = {
+    getItem: key => {
+      const cookies = document.cookie
+        .split(";")
+        .map(cookie => cookie.split("="))
+        .reduce((acc, [key, value]) => ({ ...acc, [key.trim()]: value }), {})
+      return cookies[key]
+    },
+    setItem: (key, value) => {
+      document.cookie = `${key}=${value}`
+    }
+  }
+
+  const allowCookie = cookieStorage.getItem("Zuri Chat Accept")
+  const declineCookie = cookieStorage.getItem("Zuri Chat Decline")
 
   if (!allowCookie == true || declineCookie == true) {
     useEffect(() => {
@@ -39,6 +73,9 @@ export default function Homepage() {
   const FeatureRow = props => {
     return (
       <div className={`${style.ft_row} ${props.rowOrder}`}>
+        <Helmet>
+          <title>Zuri Chat - Connect and Interact</title>
+        </Helmet>
         <div className={`${style.ft_col}`}>
           <img src={props.src} alt={props.alt} className={`${style.ft_img}`} />
         </div>
@@ -50,30 +87,13 @@ export default function Homepage() {
           </div>
           <div className={`${style.ft_link_wrap}`}>
             <a className={`${style.ft_link}`} href={props.href}>
-              <div>
-                {props.aContent}
-                <svg
-                  width="24"
-                  height="25"
-                  viewBox="0 0 24 25"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3.75 12.7507H20.25"
-                    stroke="#00B87C"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M13.5 6.00073L20.25 12.7507L13.5 19.5007"
-                    stroke="#00B87C"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+              <div className={`${style.ft_link_div}`}>
+                <p className={`${style.ft_link_p}`}>{props.aContent}</p>
+                <img
+                  src={arrow_right}
+                  alt="arrow right icon"
+                  className={`${style.arrow_right}`}
+                />
               </div>
             </a>
           </div>
@@ -94,7 +114,7 @@ export default function Homepage() {
                   For Organizations &amp; Institutions
                 </p>
                 <h1 className={`${style.hero_heading}`}>
-                  Where communication and collaboration thrives
+                  A fully Integrated way to connect and interact
                 </h1>
                 <p className={`${style.hero_p}`}>
                   Create your future with us, network, collaborate, educate and
@@ -104,7 +124,7 @@ export default function Homepage() {
               <div className={`${style.hero_left_btn_wrap}`}>
                 <Link to="/signup">
                   <button className={`${style.hero_left_btn}`}>
-                    Try Zuri.chat for free
+                    Try Zuri Chat for free
                   </button>
                 </Link>
               </div>
@@ -115,63 +135,58 @@ export default function Homepage() {
           </div>
         </div>
         {/* { COOKIES BANNER} */}
-        <div>{loading ? ' ' : <Cookies />}</div>
+        <div>{loading ? "" : <Cookies />}</div>
         {/* COMPANIES */}
-        <div className={`${style.company_banner_wrap}`}>
+        {/* <div className={`${style.company_banner_wrap}`}>
           <div className={`${style.company_banner}`}>
             <p className={`${style.cbp}`}>Trusted by top companies worldwide</p>
             <div className={`${style.logos}`}>
-              <img src={logo1} alt="" className={`${style.logo}`} />
-              <img src={logo2} alt="" className={`${style.logo}`} />
-              <img src={logo3} alt="" className={`${style.logo}`} />
-              <img src={logo4} alt="" className={`${style.logo}`} />
-              <img src={logo5} alt="" className={`${style.logo}`} />
+              <img src={logo_hng} alt="" className={`${style.logo}`} />
+              <img src={logo_i4g} alt="" className={`${style.logo}`} />
+              <img src={logo_camphouse} alt="" className={`${style.logo}`} />
+              <img src={logo_zuri} alt="" className={`${style.logo}`} />
             </div>
           </div>
-        </div>
-
+        </div> */}
         {/* FEATURES */}
         <div className={`${style.features_wrap}`}>
           <div className={`${style.features}`}>
             <FeatureRow
               src={ft_img1}
-              // * put a semantic alt description
-              alt="img"
+              alt=""
               pContent1="Seamless collaboration"
               h2Content="Communicate and collaborate from wherever you are"
               pContent2="Invite your team to your workspace. Stay connected,stay in sync, and explore ideas together from anywhere."
-              href="#"
+              href="/createworkspace"
               aContent="Create your own workspace"
+              onClick={createWorkspaceRedirect}
             />
             <FeatureRow
               src={ft_img2}
-              // * put a semantic alt description
-              alt="img"
+              alt=""
               pContent1="Remote Education"
               h2Content="Learn on the Go"
               pContent2="Take your classroom everywhere, make learning fun, stay engaged and inspired with the virtual lounge and games."
-              href="#"
+              href="/features"
               aContent="Learn more about the virtual lounge"
               rowOrder={style.ft_row_reverse}
             />
             <FeatureRow
               src={ft_img3}
-              // * put a semantic alt description
-              alt="img"
+              alt=""
               pContent1="All-in-one Workspace"
               h2Content="Customise your Workspace"
               pContent2="One tool, several plugins. Track company expenses, send information fast and smoothly, manage files and integrate tools all with Zuri.chat."
-              href="#"
+              href="/apps-integrations"
               aContent="Explore Plugins"
             />
             <FeatureRow
               src={ft_img4}
-              // * put a semantic alt description
-              alt="img"
+              alt=""
               pContent1="Advanced Search"
               h2Content="Access Files and Messages in your Workspace Effortlessly"
               pContent2="With the search tool, find previously shared messages, files and links with ease."
-              href="#"
+              href="/resources"
               aContent="Learn more about Search"
               rowOrder={style.ft_row_reverse}
             />
@@ -181,18 +196,22 @@ export default function Homepage() {
         <div className={`${style.sign_up_banner_wrap}`}>
           <div className={`${style.sign_up_banner}`}>
             <div className={`${style.sign_up_left}`}>
-              <p>
+              <p className={`${style.sign_up_left_p}`}>
                 A flexible Way to Educate, Collaborate and Team Up From Wherever
                 You Are
               </p>
               <a href="/signup">
                 <button className={`${style.sign_up_btn}`}>
-                  Sign up now for Free!!!
+                  Sign up now for Free
                 </button>
               </a>
             </div>
             <div className={`${style.sign_up_right}`}>
-              <img src={sign_up_img} alt="img" />
+              <img
+                src={sign_up_img}
+                alt="img"
+                className={`${style.sign_up_right_img}`}
+              />
             </div>
           </div>
         </div>

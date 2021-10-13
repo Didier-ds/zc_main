@@ -1,263 +1,224 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100&display=swap");
 
 body {
-  font-family: 'Lato', sans-serif !important;
+  font-family: "Lato", sans-serif !important;
 }
-.container {
+.hero {
   margin-top: 100px !important;
-}
-.h1 {
-  font-weight: 800;
-  font-size: 42px;
-  line-height: 50px;
-}
-.p {
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 26px;
-}
-.plink {
-  color: #00b87c;
-  text-decoration-line: underline;
-  font-weight: 800;
-  font-size: 18px;
-  line-height: 26px;
-}
-.divcol {
-  padding: 0 !important;
-}
-.circle {
-  position: absolute;
-  top: 122px;
-  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 70px;
+  width: 90%;
+  margin: auto;
+  text-align: center;
 }
 .screenshot {
-  position: relative;
-  left: 17px;
-  top: 0;
-  z-index: 1;
+  width: 350px;
 }
-.circle2 {
-  position: absolute;
-  left: 1160px;
-  top: 273px;
-  z-index: 0;
+
+.screen {
+  height: 800px;
+  width: 100%;
+}
+.laptop {
+  width: 510px;
+}
+.heroheading {
+  font-weight: 600;
+  font-size: 38px;
+  line-height: 38px;
+  color: #333333;
+}
+
+.heroText {
+  width: 90%;
+  margin: auto;
+}
+
+.heroImages {
+  display: flex;
+  justify-content: space-between;
+
+  padding-top: 2%;
+}
+
+.alignCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.mobileImage {
+  margin-bottom: 30px;
 }
 .button1 {
-  display: block;
-  margin: 10px 0;
-  width: 222px;
-  border-radius: 3px;
+  display: inline-block;
+  border-radius: 4px;
   color: white;
   background-color: #00b87c;
   padding: 16px;
-  font-size: 15px;
-  line-height: 18px;
-  font-weight: 800;
-  text-align: center;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: normal;
   text-decoration: none;
 }
-.versionlink {
-  font-size: 14px;
-  line-height: 26px;
-  color: #00b87c;
-  text-decoration-line: underline;
+
+.button1:hover {
+  background-color: rgb(52, 179, 94);
 }
-.mobilelink {
-  margin-left: 98px;
-  font-size: 14px;
-  line-height: 26px;
-  color: #00b87c;
-  text-decoration-line: underline;
+
+.info {
+  background-color: #00b87c;
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.bit {
-  position: relative;
-  z-index: 1;
-  margin-left: 23px;
-  color: white;
-}
-.circle1 {
-  position: absolute;
-  z-index: 0;
-  top: 770px;
-}
-.half {
-  position: absolute;
-  z-index: 0;
-  left: 1160px;
-  top: 950px;
-}
-.rec {
-  position: absolute;
-  z-index: 0;
-  top: 1555px;
-  left: 525px;
-}
-.dm {
-  position: relative;
-  z-index: 1;
-  left: 240px;
-}
-.android {
-  position: relative;
-  z-index: 1;
-  left: 160px;
-}
-.foot {
-  height: 460px;
-}
-.rec1 {
-  position: absolute;
-  z-index: 0;
-  width: 100%;
-}
-.button {
-  position: relative;
-  z-index: 1;
-  padding: 119px;
-  text-align: center;
-}
-.work {
-  color: #f6f6f6;
-  font-weight: 900;
-  font-size: 48px;
-  line-height: 58px;
-  text-align: center;
-}
-.button2 {
-  margin: 0 10px;
-  border-radius: 3px;
-  background-color: white;
-  color: #00b87c;
-  padding: 16px;
-  font-weight: 800;
-  text-decoration: none;
-}
-.button3 {
-  margin: 0 10px;
+.p1 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 130%;
   color: #ffffff;
-  width: 234px;
-  height: 50px;
-  border: 2px solid #ffffff;
-  border-radius: 3px;
-  padding: 16px;
-  text-decoration: none;
 }
 a:hover {
   text-decoration: none;
-  color: #000000;
+  color: #ffffff;
+}
+.downloadButtonContainer {
+  margin-bottom: 30px;
+}
+
+.downloadButton {
+  display: inline-block;
+  border-radius: 4px;
+  color: white;
+  background-color: #000;
+  padding: 10px 15px;
+  padding-right: 20px;
+  font-size: 14px;
+  font-weight: normal;
+  text-decoration: none;
+  margin: 15px;
+}
+
+.downloadButton1 {
+  display: inline-block;
+  border-radius: 4px;
+  color: #00b87c;
+  background-color: white;
+  padding: 16px 30px;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: normal;
+  text-decoration: none;
+  margin: 15px;
+}
+
+.downloadButton:hover {
+  background-color: #e5e5e5;
+  text-decoration: none;
+  color: #00b87c;
+}
+.downloadButton1:hover {
+  background-color: #e5e5e5;
+  text-decoration: none;
+  color: #00b87c;
+}
+
+.infoImageContainer {
+  max-height: 500px;
+  overflow: hidden;
+}
+.ctaContainer {
+  display: flex;
+  align-items: center;
+  padding: 100px 70px;
+  justify-content: space-between;
 }
 
 @media screen and (max-width: 1325px) {
   .container {
-    margin-top: 0 !important;
+    margin-top: 50px !important;
   }
-  .h1 {
-    font-weight: 800;
-    font-size: 32px;
-    line-height: 50px;
-  }
-  .p {
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
-  }
-  .circle {
-    width: 150px;
-  }
-  .screenshot {
-    width: 763px;
-  }
-  .circle1 {
-    top: 695px;
-    width: 150px;
-  }
-  .circle2 {
-    top: 235px;
-    left: 1020px;
-    width: 235px;
-  }
-  .mobilelink {
-    margin-left: 25px;
-  }
-  .half {
-    left: 1020px;
-    width: 235px;
-    top: 845px;
-  }
-  .rec {
-    top: 1440px;
-    left: 560px;
-    width: 700px;
-  }
-  .dm {
-    width: 200px;
+
+  .screenshot,
+  .laptop {
+    width: 410px;
     top: 40px;
-    left: 265px;
   }
-  .android {
-    width: 200px;
-    top: 40px;
-    left: 220px;
+  .buttondiv {
+    padding: 16px !important;
+    margin-bottom: 24px !important;
   }
 }
 
 @media screen and (max-width: 1200px) {
-  .container {
-    padding: 0 !important;
-    margin-top: 20px !important;
+  .hero,
+  .ctaContainer {
+    padding: 100px 40px;
   }
-  .h1 {
-    font-size: 24px;
+  .heroText {
+    width: 80%;
   }
-  .p {
+  .hero {
+    padding: 10px 40px;
+  }
+  .heroheading {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 30px;
+  }
+  .screenshot,
+  .laptop {
+    width: 360px;
+  }
+  .buttondiv {
+    padding: 30px 0 0 !important;
+  }
+  .p1 {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .laptop {
+    width: 300px;
+    top: 30px;
+  }
+  .buttondiv {
+    padding: 40px 0 0 !important;
+  }
+  .button1 {
     font-size: 12px;
+    margin-bottom: 50px;
   }
-  .circle {
-    width: 130px;
-  }
-  .screenshot {
-    width: 669px;
-  }
-  .circle2 {
-    top: 240px;
-    left: 840px;
-    width: 190px;
-  }
-  .circle1 {
-    top: 590px;
-    width: 150px;
-  }
-  .half {
-    left: 831px;
-    width: 190px;
-    top: 740px;
-  }
-  .bit {
+
+  .downloadButton {
+    padding: 11px 22px;
     font-size: 13px;
-    color: white;
+    margin: 15px;
   }
-  .rec {
-    left: 324px;
-    top: 1226px;
+  .downloadButton1 {
+    padding: 11px 22px;
+    font-size: 13px;
+    margin: 15px;
   }
-  .android {
-    left: 100px;
+
+  .hero {
+    flex-direction: column;
   }
-  .dm {
-    left: 140px;
+
+  .heroText {
+    text-align: center;
   }
-  .versionlink {
-    font-size: 12px;
-  }
-  .mobilelink {
-    font-size: 12px;
-    margin-left: 16px;
-  }
-  .button {
-    padding: 75px;
-  }
-  .work {
-    font-size: 35px;
+
+  .screenshot {
+    width: 560px;
   }
 }

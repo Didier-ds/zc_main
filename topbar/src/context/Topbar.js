@@ -1,26 +1,31 @@
-import { createContext, useState, useRef } from 'react'
+import { createContext, useState, useRef, useContext } from "react"
+import { authAxios } from "../utils/Api"
+import { ProfileContext } from "./ProfileModal"
 
 export const TopbarContext = createContext(null)
 export const TopbarProvider = ({ children }) => {
   const modalRef = useRef()
 
   // setting up my states for the profile topbar modal
-  const [active, setActive] = useState(true)
+  const [presence, setPresence] = useState("true")
   const [showModal, setShowModal] = useState(false)
   const [showStatus, setShowStatus] = useState(false)
   const [showMembersModal, setShowMembersModal] = useState(false)
-  const [chosenEmoji, setChosenEmoji] = useState({ emoji: '4️⃣' })
+  const [chosenEmoji, setChosenEmoji] = useState({ emoji: "4️⃣" })
+  const [reusableModal, setReusableModal] = useState("")
+  const [profilePicView, setProfilePicView] = useState(false)
+  //get Profile content state
+
+  const { orgId, user } = useContext(ProfileContext)
 
   // The function that opens the topbar profile modal
   const openModal = () => {
-    setShowModal(!showModal)
+    setShowModal(true)
   }
 
   // The function that closes the topbar profile modal
   const closeModal = e => {
-    if (modalRef.current === e.target) {
-      setShowModal(false)
-    }
+    setShowModal(false)
   }
 
   // The function that opens the topbar profile status modal
@@ -50,6 +55,30 @@ export const TopbarProvider = ({ children }) => {
     setShowMembersModal(false)
   }
 
+  const onSetPresence = () => {
+    setPresence(() => {
+      if (presence === "true") {
+        return "false"
+      } else {
+        return "true"
+      }
+    })
+  }
+  const toggleUserPresence = () => {
+    onSetPresence()
+    authAxios
+      .post(`/organizations/${orgId}/members/${user._id}/presence`, presence)
+      .then(res => {
+        // console.log('response1 =>', res)
+        return authAxios.get(`/organizations/${orgId}/members/${user._id}/`)
+      })
+      .then(res => {
+        // console.log('response2', res.data.data.presence)
+      })
+      .catch(err => {
+        console.error(err?.response?.data)
+      })
+  }
   // Passes all functions and states to the state object
   const state = {
     openModal,
@@ -58,8 +87,15 @@ export const TopbarProvider = ({ children }) => {
     closeStatus,
     openMembersModal,
     closeMembersModal,
+    toggleUserPresence,
+    onSetPresence,
     modalRef,
-    presence: [active, setActive],
+    presence,
+    setPresence,
+    reusableModal,
+    setReusableModal,
+    profilePicView,
+    setProfilePicView,
     show: [showModal, setShowModal],
     status: [showStatus, setShowStatus],
     emoji: [chosenEmoji, setChosenEmoji],
